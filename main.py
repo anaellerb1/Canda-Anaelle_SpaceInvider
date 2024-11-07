@@ -6,7 +6,16 @@ class Jeu:
         
 class 
 
+
+
 # Lancer l'interface
 interface = tk.Tk()
 game = Jeu(interface)
 interface.mainloop()
+
+
+
+
+
+
+
