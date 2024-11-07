@@ -23,3 +23,6 @@ class Alien:
             self.direction *= -1
             """self.canvas.move(self.id, 0, 20)"""  # Descend lorsque atteint le bord
         self.canvas.move(self.id, self.vitesse_x * self.direction, 0)
+
+
+    

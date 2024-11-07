@@ -13,7 +13,7 @@ class Alien_2:
         self.canvas = canvas
         self.id = canvas.create_oval(x - 15, y - 15, x + 15, y + 15, fill="orange")
         self.vitesse_x = 2
-        self.vitesse_y = 1
+        self.vitesse_y = -1
         self.direction = 1
         self.life=50
 
