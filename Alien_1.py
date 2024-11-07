@@ -1,5 +1,5 @@
 """
-Sanjay CANDA 3ETI
+Anaëlle ROBIN  et Sanjay CANDA 3ETI
 07/11/2024
 Fichier de la classe pour définir le vaisseau du joueur
 """
@@ -9,6 +9,7 @@ HAUTEUR = 400
 # Définition de la classe des vaisseaux ennemis niveau 1
 class Alien:
     def __init__(self, canvas, x, y, width, height, vitesse_x):
+        """Initialisation de l'object vaisseau ennemi """
         self.canvas = canvas
         self.id = canvas.create_rectangle(x - 15, y - 15, x + 15, y + 15, fill="yellow") # dessin Alien
         self.vitesse_x = 2
