@@ -3,8 +3,7 @@ Sanjay CANDA 3ETI
 07/11/2024
 Fichier de la classe pour définir le vaisseau du joueur
 """
-height = 600
-width = 400
+
 
 class Torpille :
     def __init__(self, canvas, x, y):
