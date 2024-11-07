@@ -1,3 +1,10 @@
+"""
+Anaëlle ROBIN  & Sanjay CANDA 3ETI
+07/11/2024
+Fichier de la classe pour créer le jeu
+"""
+
+
 import tkinter as tk
 import Player
 import Alien_1
