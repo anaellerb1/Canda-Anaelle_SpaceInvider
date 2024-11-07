@@ -9,3 +9,5 @@ CLasse :
 
 Ajouter unn truc pour que la page s'adapte toute seule // bouton plein écran
 mettre un bouton pause
+
+ self.niveau = 1 DANS ALIEN ETC
