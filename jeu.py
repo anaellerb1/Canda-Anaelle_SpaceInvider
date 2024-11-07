@@ -20,7 +20,7 @@ joueur_y = HAUTEUR - 30
 joueur_vitesse = 20
 joueur = canvas.create_rectangle(joueur_x - 15, joueur_y - 10, joueur_x + 15, joueur_y + 10, fill="blue")
 
-# Liste des projectiles du joueur
+# Liste des projectiles du joueur 
 projectiles = []
 projectile_vitesse = 10
 
