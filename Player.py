@@ -12,7 +12,7 @@ class Player :
     def __init__(self, canvas):
         """Initialisation de l'objet joueur"""
         self.canvas = canvas
-        self.vitesse = 15
+        self.vitesse = 10
         self.id = canvas.create_polygon(self.x - 15, self.x + 15, self.y + 10, fill="white")
         self.x = 600 * (3/4)
         self.y = 400 - 200

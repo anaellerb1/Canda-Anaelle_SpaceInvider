@@ -13,7 +13,7 @@ class Alien_1:
         self.canvas = canvas
         self.id = canvas.create_rectangle(x - 15, y - 15, x + 15, y + 15, fill="yellow")
         self.vitesse_x = 2
-        self.vitesse_y = 1
+        self.vitesse_y = -1
         self.direction = 1
         self.life=25
 
@@ -24,3 +24,6 @@ class Alien_1:
             self.direction *= -1
             """self.canvas.move(self.id, 0, 20)"""  # Descend lorsque atteint le bord
         self.canvas.move(self.id, self.vitesse_x * self.direction, 0)
+
+
+    
