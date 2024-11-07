@@ -64,10 +64,8 @@ class Jeu:
         self.score = 0
         self.update_score()
         
-        # Initialiser le joueur
+        # Initialiser 
         self.player = Player(self.Canvas)
-        
-        # Initialiser un alien comme exemple
         self.alien = Alien_1(self.Canvas, 100, 50)
         
         # Commencer le mouvement de l'alien
@@ -77,6 +75,11 @@ class Jeu:
     def update_score(self):
         self.score_label.config(text=f"Score: {self.score}")
         pass
+
+    def deplacer_aliens(self):
+        """Méthode pour déplacer les aliens à chaque intervalle."""
+        self.alien.deplacement_alien()
+        self.interface.after(50, self.move_aliens)  
 
 
 # Lancer l'interface
