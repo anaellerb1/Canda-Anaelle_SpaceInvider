@@ -3,6 +3,7 @@ import Player
 import Alien_1
 import Alien_2
 import Alien_3
+import Torpille
 
 LARGEUR = 600
 HAUTEUR = 400
@@ -55,31 +56,26 @@ class Jeu:
         self.level = 0
         self.vies = 5
 
-        # Bind les touches pour le déplacement du joueur
-        self.interface.bind("<Left>", lambda event: self.player.deplacement(-1))
-        self.interface.bind("<Right>", lambda event: self.player.deplacement(1))
+    def deplacer_aliens(self):
+        """Méthode pour déplacer les aliens à chaque intervalle."""
+        self.alien.deplacement_alien()  # Déplacer l'alien
+        self.interface.after(50, self.deplacer_aliens)
 
     def start_game(self):
         # Code pour démarrer la partie
         self.score = 0
         self.update_score()
         
-        # Initialiser 
-        self.player = Player(self.Canvas)
-        self.alien = Alien_1(self.Canvas, 100, 50)
-        
-        # Commencer le mouvement de l'alien
-        self.move_aliens()
+        # Créer l'alien et le déplacer
+        self.alien = Alien(self.Canvas, 100, 50, 40, 40, 2)  # Position initiale, taille de l'alien, vitesse
+        self.deplacer_aliens()
+
         pass
 
     def update_score(self):
         self.score_label.config(text=f"Score: {self.score}")
         pass
 
-    def deplacer_aliens(self):
-        """Méthode pour déplacer les aliens à chaque intervalle."""
-        self.alien.deplacement_alien()
-        self.interface.after(50, self.move_aliens)  
 
 
 # Lancer l'interface
