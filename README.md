@@ -2,7 +2,7 @@
 
 CLasse : 
 - map
-- player
+- player 
 - ennemi ( une classe par type d'ennemi)
 - projectile ??
 
