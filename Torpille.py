@@ -28,20 +28,41 @@ class Torpille:
         # Met à jour la position de la torpille
         self.canvas.coords(self.id, self.x - 2, self.y - 20, self.x + 2, self.y - 30)
 
-        # Si la torpille sort de l'écran, la supprimer
+        self.verifier_collision()
+
         if self.y < 0:
             self.canvas.delete(self.id)
-            Torpille.torpilles.remove(self)  # Retirer la torpille de la liste
+            Torpille.torpilles.remove(self) 
         else:
-            # Relancer le déplacement de la torpille
             self.canvas.after(20, self.deplacer)
+
+    def verifier_collision(self):
+        """Vérifie si la torpille touche un alien"""
+        for alien in self.canvas.winfo_children():
+            if isinstance(alien, Alien):
+                if self.collision(alien):
+                    self.canvas.delete(alien.id) 
+                    self.canvas.delete(self.id)   
+                    Torpille.torpilles.remove(self)  
+                    break  
+    
+    def collision(self, alien):
+        """Vérifier si la torpille touche un alien"""
+        # Obtenez les coordonnées de la torpille et de l'alien
+        tx1, ty1, tx2, ty2 = self.canvas.coords(self.id)  # Coordonnées de la torpille
+        ax1, ay1, ax2, ay2 = self.canvas.coords(alien.id)  # Coordonnées de l'alien
+
+        # Vérifier si les boîtes englobantes de la torpille et de l'alien se chevauchent
+        if tx2 > ax1 and tx1 < ax2 and ty2 > ay1 and ty1 < ay2:
+            return True
+        return False               
 
     @classmethod #classe en premier argument (cls) au lieu de l'instance (self).
     def tirer(cls, canvas, x, y):
         """Créer une torpille et l'ajouter à la liste des torpilles"""
         torpille = Torpille(canvas, x, y)
         cls.torpilles.append(torpille)
-        torpille.deplacer()  # Lance immédiatement le déplacement de la torpille
+        torpille.deplacer()  
 
     
 
