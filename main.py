@@ -2,115 +2,109 @@
 Anaëlle ROBIN  & Sanjay CANDA 3ETI
 07/11/2024
 Fichier de la classe pour créer le jeu
+Status: 
+       EN COURS
 """
-
-
 import tkinter as tk
-import Player
-import Alien_1
-import Alien_2
-import Alien_3
-import Torpille
-
-LARGEUR = 600
-HAUTEUR = 400
+from Alien import Alien
+from Player import Player
 
 class Jeu:
     def __init__(self, interface):
+        # Initialisation des variables
+        self.aliens = []  
+        self.score = 0
+        self.LARGEUR = 600
+        self.HAUTEUR = 700
+
         self.interface = interface
-        self.interface.title("Space Invider - Sanjay x Anaëlle")
-        
-        #canva de la page
-        self.Canvas = tk.Canvas(interface, width=LARGEUR, height=HAUTEUR, bg='black' )
+        self.interface.title("Space Invader - Sanjay x Anaëlle")
+
+        # fenêtre
+        self.center_window(self.LARGEUR, self.HAUTEUR+1000)
+        self.Canvas = tk.Canvas(interface, width=self.LARGEUR, height=self.HAUTEUR, bg='black')
         self.Canvas.pack(anchor=tk.CENTER, expand=True)
 
-        #Frame options
         self.frame = tk.Frame(self.interface)
         self.frame.pack()
 
-        #en-tete
+        # En-tête
         self.Canvas.create_text(
-            (300,100),
-            text = "Space Invider",
-            fill = "yellow",
-            font = ('arial',24,"bold")
+            (300, 100),
+            text="Space Invader",
+            fill="yellow",
+            font=('arial', 24, "bold")
         )
         
-        #score / level / vies / highest score
-        self.score = 0
+        # Score
         self.score_label = tk.Label(self.interface, text=f"Score: {self.score}", font=("Arial", 14), fg="black")
         self.score_label.pack()
 
-        #Start / quit button
+        # Start button
         start_button = tk.Button(self.frame, text="Démarrer", command=self.start_game)
         start_button.pack(side=tk.LEFT, padx=10)
 
-        """quit_button = tk.Button(self.interface, text="Quitter", command=self.interface.quit, )
-        quit_button.pack(side=tk.RIGHT, padx=10)"""
-
-        #Menu 'option'
+        # Menu 'option'
         menubar = tk.Menu(self.interface)
         self.interface.config(menu=menubar)
 
         game_menu = tk.Menu(menubar, tearoff=0)
         menubar.add_cascade(label="Options", menu=game_menu)
-        """game_menu.add_command(label="Recommencer", command=self.start_game)
-        game_menu.add_separator()"""
         game_menu.add_command(label="Quitter", command=self.interface.quit)
 
-        #Initialisation variables
-        self.score = 0
-        self.level = 0
-        self.vies = 5
+        
 
-    def deplacer_aliens(self):
-        """Méthode pour déplacer les aliens à chaque intervalle."""
-        self.alien.deplacement_alien()  # Déplacer l'alien
-        self.interface.after(50, self.deplacer_aliens)
+    def center_window(self, width, height):
+        """Centre la fenêtre sur l'écran."""
+        screen_width = self.interface.winfo_screenwidth()  # Largeur de l'écran
+        screen_height = self.interface.winfo_screenheight()  # Hauteur de l'écran
+
+        # Calculer la position pour centrer la fenêtre
+        position_top = int(screen_height / 2 - height / 2)
+        position_left = int(screen_width / 2 - width / 2)
+
+        # Appliquer la géométrie de la fenêtre
+        self.interface.geometry(f'{width}x{height}+{position_left}+{position_top}')
 
     def start_game(self):
-        # Code pour démarrer la partie
+        """Code pour démarrer la partie."""
         self.score = 0
         self.update_score()
         
-        # Créer l'alien et le déplacer
-        self.alien = Alien(self.Canvas, 100, 50, 40, 40, 2)  # Position initiale, taille de l'alien, vitesse
+        """Partie Alien"""
+        for alien in self.aliens:
+            self.Canvas.delete(alien.id)
+        self.aliens = []  # Réinitialiser la liste
+
+        for i in range(5):  # 5 colonnes
+            for j in range(3):  # 3 rangées
+                x = 100 + i * 50
+                y = 50 + j * 50
+                alien = Alien(self.Canvas, x, y, 40, 40, 0.1, self.LARGEUR) 
+                self.aliens.append(alien)
+
         self.deplacer_aliens()
 
-        pass
+        """Partie Joueur"""
+        self.joueur = Player(self.Canvas, self.LARGEUR, self.HAUTEUR, interface)
+
 
     def update_score(self):
+        """Met à jour l'affichage du score."""
         self.score_label.config(text=f"Score: {self.score}")
-        pass
 
+    def deplacer_aliens(self):
+        """Déplace tous les aliens à chaque intervalle."""
+        # Déplacer tous les aliens
+        for alien in self.aliens:
+            alien.deplacer_aliens(self.aliens)
 
-class Alien:
-    def __init__(self, canvas, x, y, width, height, vitesse_x):
-        self.canvas = canvas
-        self.id = canvas.create_rectangle(x - 15, y - 15, x + 15, y + 15, fill="yellow") # dessin Alien
-        self.vitesse_x = 2
-        self.vitesse_y = -1
-        self.direction = 1 # 1 : se déplacer vers la droite (gauche=-1)
-        self.life=25 #vie Alien
-        self.niveau = 1
-
-    def deplacement_alien(self):
-        """Initialisation des déplacement du vaisseau ennemi """
-        x1, y1, x2, y2 = self.canvas.coords(self.id)
-        if x2 >= LARGEUR or x1 <= 0:
-            self.direction *= -1
-            """self.canvas.move(self.id, 0, 20)"""  # Descend lorsque atteint le bord
-        self.canvas.move(self.id, self.vitesse_x * self.direction, 0)
+        # Relancer le mouvement après un court délai
+        self.interface.after(16, self.deplacer_aliens)
+    
 
 
 # Lancer l'interface
 interface = tk.Tk()
 game = Jeu(interface)
 interface.mainloop()
-
-
-
-
-
-
-
