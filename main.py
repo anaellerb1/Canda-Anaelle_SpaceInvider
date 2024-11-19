@@ -87,7 +87,7 @@ class Jeu:
 
         """Partie Joueur"""
         self.joueur = Player(self.Canvas, self.LARGEUR, self.HAUTEUR, interface)
-
+    
 
     def update_score(self):
         """Met à jour l'affichage du score."""
@@ -105,6 +105,6 @@ class Jeu:
 
 
 # Lancer l'interface
-interface = tk.Tk()
+interface = tk.Tk() 
 game = Jeu(interface)
 interface.mainloop()

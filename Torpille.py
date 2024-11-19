@@ -4,20 +4,45 @@ Anaëlle ROBIN  & Sanjay CANDA 3ETI
 Fichier de la classe pour définir le vaisseau du joueur
 """
 
+class Torpille:
+    torpilles = []  # Liste partagée de toutes les torpilles dans le jeu
 
-class Torpille :
     def __init__(self, canvas, x, y):
-        """ Initialisation de l'object torpille """
+        """Initialisation de la torpille"""
         self.canvas = canvas
-        self.id = canvas.create_rectangle(x - 1, y - 2, x + 1, y + 2, fill="white")
-        self.vitesse_y = 10
-        self.direction = 1
+        self.x = x
+        self.y = y
+        self.vitesse = 30  # Vitesse de la torpille
+        
+        # Création de la torpille sous forme de rectangle
+        self.id = canvas.create_rectangle(
+            self.x - 2, self.y - 20,  # Position de départ de la torpille
+            self.x + 2, self.y - 30,  # Taille du rectangle
+            fill="red",  # Couleur
+        )
 
-    def deplacement(self):
-        """ Initialisation des déplacement de la torpille """
-        self.canvas.move(self.id, 0, self.vitesse_y)
-        if self.canvas.coords(self.id)[1] < 0: 
+    def deplacer(self):
+        """Déplacement de la torpille vers le haut."""
+        self.y -= self.vitesse  # Déplacer la torpille vers le haut
+
+        # Met à jour la position de la torpille
+        self.canvas.coords(self.id, self.x - 2, self.y - 20, self.x + 2, self.y - 30)
+
+        # Si la torpille sort de l'écran, la supprimer
+        if self.y < 0:
             self.canvas.delete(self.id)
-            return False  # Indique que le projectile doit être supprimé
-        return True
+            Torpille.torpilles.remove(self)  # Retirer la torpille de la liste
+        else:
+            # Relancer le déplacement de la torpille
+            self.canvas.after(20, self.deplacer)
+
+    @classmethod #classe en premier argument (cls) au lieu de l'instance (self).
+    def tirer(cls, canvas, x, y):
+        """Créer une torpille et l'ajouter à la liste des torpilles"""
+        torpille = Torpille(canvas, x, y)
+        cls.torpilles.append(torpille)
+        torpille.deplacer()  # Lance immédiatement le déplacement de la torpille
+
     
+
+

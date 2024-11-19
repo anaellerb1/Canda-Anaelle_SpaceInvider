@@ -15,7 +15,7 @@ class Alien:
         self.direction = 1  # 1 : se déplacer vers la droite (gauche=-1)
         self.life = 25 
         self.niveau = 1
-        self.largeur_jeu = largeur_jeu  
+        self.largeur_jeu = largeur_jeu 
 
     def deplacer_aliens(self, aliens):
         """Méthode pour déplacer tous les aliens à chaque intervalle."""

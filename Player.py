@@ -1,3 +1,10 @@
+"""
+Anaëlle ROBIN  & Sanjay CANDA 3ETI
+07/11/2024
+Fichier de la classe pour définir le vaisseau du joueur
+"""
+from Torpille import Torpille
+
 class Player:
     def __init__(self, canvas, largeur_jeu, hauteur_jeu, interface):
         """Initialisation de l'objet joueur"""
@@ -20,12 +27,11 @@ class Player:
         self.vitesse = 5  # Vitesse du joueur (plus bas pour un contrôle plus fin)
         self.direction = 0  # 0 = pas de mouvement, 1 = droite, -1 = gauche
         
-        # Lier les événements clavier
         interface.bind("<Left>", self.deplacer_gauche)
         interface.bind("<Right>", self.deplacer_droite)
         interface.bind("<KeyRelease-Left>", self.arreter_deplacement)
         interface.bind("<KeyRelease-Right>", self.arreter_deplacement)
-
+        interface.bind("<space>", lambda event: Torpille.tirer(self.canvas, self.x, self.y))
         # Commencer la mise à jour continue du déplacement
         self.deplacement_continue()
 
@@ -44,20 +50,18 @@ class Player:
 
     def deplacer_gauche(self, event):
         """Déplacer le joueur vers la gauche."""
-        self.direction = -1  # Déplace à gauche
+        self.direction = -1 
 
     def deplacer_droite(self, event):
         """Déplacer le joueur vers la droite."""
-        self.direction = 1  # Déplace à droite
+        self.direction = 1 
     
     def arreter_deplacement(self, event):
         """Arrêter le mouvement du joueur."""
-        self.direction = 0  # Arrête le déplacement
+        self.direction = 0  
 
     def deplacement_continue(self):
         """Mettre à jour la position du joueur en fonction de la direction."""
-        if self.direction != 0:  # Si le joueur doit se déplacer
+        if self.direction != 0:  
             self.deplacement(self.direction)
-        
-        # Relancer la mise à jour du mouvement après un court délai (10 ms pour 100 FPS)
-        self.canvas.after(10, self.deplacement_continue)  # 100 FPS
+        self.canvas.after(10, self.deplacement_continue)  
