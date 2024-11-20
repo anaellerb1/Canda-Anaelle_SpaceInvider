@@ -14,14 +14,14 @@ class Jeu:
         # Initialisation des variables
         self.aliens = []  
         self.score = 0
-        self.LARGEUR = 600
-        self.HAUTEUR = 700
+        self.LARGEUR = 200
+        self.HAUTEUR = 400
 
         self.interface = interface
         self.interface.title("Space Invader - Sanjay x Anaëlle")
 
         # fenêtre
-        self.center_window(self.LARGEUR, self.HAUTEUR+1000)
+        self.center_window(self.LARGEUR, self.HAUTEUR)
         self.Canvas = tk.Canvas(interface, width=self.LARGEUR, height=self.HAUTEUR, bg='black')
         self.Canvas.pack(anchor=tk.CENTER, expand=True)
 
