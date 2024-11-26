@@ -18,17 +18,22 @@ class Alien:
         self.largeur_jeu = largeur_jeu 
 
     def deplacer_aliens(self, aliens):
-        """Méthode pour déplacer tous les aliens à chaque intervalle."""
-        # Vérifier les aliens aux extrémités (à gauche et à droite)
+        """
+        Méthode pour déplacer tous les aliens à chaque intervalle. 
+        Si un alien touche un bord, il change de direction et descend.
+
+        Args:
+            aliens (list): Liste des aliens à déplacer
+
+        Returns:
+            None
+        """
         aliens_bords = self.get_bord(aliens)
         
-        # Si un alien touche un bord, changer la direction et faire descendre tous les aliens
         if aliens_bords['Gauche'] or aliens_bords['Droite']:
             for alien in aliens:
-                alien.direction *= -1  # Changer la direction de tous les aliens
-                alien.canvas.move(alien.id, 0, 20)  # Descendre tous les aliens
-
-        # Déplacer chaque alien horizontalement
+                alien.direction *= -1 
+                alien.canvas.move(alien.id, 0, 20)
         for alien in aliens:
             alien.canvas.move(alien.id, alien.vitesse_x * alien.direction, 0)
 

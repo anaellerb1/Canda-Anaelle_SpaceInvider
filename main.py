@@ -93,28 +93,44 @@ class Jeu:
 
     def deplacer_aliens(self):
         """Déplace tous les aliens à chaque intervalle."""
-        # Déplacer tous les aliens
         for alien in self.aliens:
             alien.deplacer_aliens(self.aliens)
-
+        
+        self.is_collision()  # Vérifie les collisions après chaque déplacement
+        
         # Relancer le mouvement après un court délai
         self.interface.after(16, self.deplacer_aliens)
-    
+
     def is_collision(self):
-        """Vérifie si il y a collisions entre les torpilles et les aliens."""
-        for torpille in Torpille.torpilles:
-            for alien in self.aliens:
-                x1, y1, x2, y2 = self.Canvas.coords(alien.id)
-                x, y = torpille.x, torpille.y
-                if x1 < x < x2 and y1 < y < y2:
-                    self.score += 1
-                    self.update_score()
+        """Vérifie les collisions entre les torpilles et les aliens."""
+        for torpille in list(Torpille.torpilles):  # Crée une copie de la liste pour éviter des modifications simultanées
+            torpille_coords = self.Canvas.coords(torpille.id)  # [x1, y1, x2, y2] de la torpille
+            if not torpille_coords:
+                continue  # La torpille a peut-être déjà été supprimée
+            for alien in list(self.aliens):  # Crée une copie pour éviter des problèmes similaires
+                alien_coords = self.Canvas.coords(alien.id)  # [x1, y1, x2, y2] de l'alien
+                if not alien_coords:
+                    continue  # L'alien a peut-être déjà été supprimé
+                
+                # Vérifier les collisions en comparant les rectangles
+                if (
+                    torpille_coords[0] < alien_coords[2] and
+                    torpille_coords[2] > alien_coords[0] and
+                    torpille_coords[1] < alien_coords[3] and
+                    torpille_coords[3] > alien_coords[1]
+                ):
+                    # Supprimer les objets en cas de collision
                     self.Canvas.delete(alien.id)
                     self.aliens.remove(alien)
                     self.Canvas.delete(torpille.id)
                     Torpille.torpilles.remove(torpille)
+                    
+                    # Mettre à jour le score
+                    self.score += 1
+                    self.update_score()
                     break
 
+    
 # Lancer l'interface
 interface = tk.Tk() 
 game = Jeu(interface)

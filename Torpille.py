@@ -32,7 +32,6 @@ class Torpille:
         if self.y < 0:
             self.canvas.delete(self.id)
             Torpille.torpilles.remove(self)  # Retirer la torpille de la liste
-        
         else:
             # Relancer le déplacement de la torpille
             self.canvas.after(20, self.deplacer)
