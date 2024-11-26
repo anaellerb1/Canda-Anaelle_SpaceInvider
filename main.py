@@ -104,20 +104,34 @@ class Jeu:
         self.interface.after(16, self.deplacer_aliens)
     
     def deplacer_torpilles(self):
+         """Déplacement de la torpille vers le haut."""
+         Torpille.torpilles.y -=  Torpille.torpilles.vitesse  # Déplacer la torpille vers le haut
+    
+        # Met à jour la position de la torpille
+        Torpille.torpilles.canvas.coords( Torpille.torpilles.id,  Torpille.torpilles.x - 2,  Torpille.torpilles.y - 20,
+                                           Torpille.torpilles.x + 2,  Torpille.torpilles.y - 30)
+
         for torpille in Torpille.torpilles:
-            torpille.deplacer()
-            alien_detecte = torpille.detecter_collision(self.aliens)
+            
+             # Si la torpille sort de l'écran, la supprimer
+        if torpille.y < 0:
+            Torpille.torpilles.canvas.delete(Torpille.torpilles.id)
+            Torpille.torpilles.remove(torpille)  # Retirer la torpille de la liste
+        else:
+            # Relancer le déplacement de la torpille
+            torpille.canvas.after(20, Torpille.torpilles.deplacer)
+            alien_detecte = torpille.detecter_collision(Torpille.torpilles.aliens)
             if alien_detecte:
-                self.score += 1
-                self.update_score()
-                self.aliens.remove(alien_detecte)
-                self.Canvas.delete(alien_detecte.id)
-                self.Canvas.delete(torpille.id)
+                Torpille.torpilles.score += 1
+                Torpille.torpilles.update_score()
+                Torpille.torpilles.aliens.remove(alien_detecte)
+                Torpille.torpilles.Canvas.delete(alien_detecte.id)
+                Torpille.torpilles.Canvas.delete(torpille.id)
                 Torpille.torpilles.remove(torpille)
                 break
             
             
-        self.interface.after(50, self.deplacer_torpilles)  # Appelle cette méthode toutes les 50 ms
+        Torpille.torpilles.interface.after(50, Torpille.torpilles.deplacer_torpilles)  # Appelle cette méthode toutes les 50 ms
 
 
     
