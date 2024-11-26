@@ -2,7 +2,7 @@
 Anaëlle ROBIN  & Sanjay CANDA 3ETI
 07/11/2024
 
-Fichier de la classe pour créer le jeu
+Fichier de la classe Jeu
 
 Status: 
        EN COURS

@@ -1,7 +1,7 @@
 """
 Anaëlle ROBIN  & Sanjay CANDA 3ETI
 07/11/2024
-Fichier de la classe pour définir le vaisseau du joueur
+Fichier de la classe Player pour le vaisseau du joueur
 """
 from Torpille import Torpille
 
