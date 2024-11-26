@@ -1,28 +1,33 @@
 """
 Anaëlle ROBIN  & Sanjay CANDA 3ETI
 07/11/2024
+
 Fichier de la classe pour créer le jeu
+
 Status: 
        EN COURS
 """
 import tkinter as tk
 from Alien import Alien
 from Player import Player
+from Torpille import Torpille
 
 class Jeu:
     def __init__(self, interface):
         # Initialisation des variables
         self.aliens = []  
         self.score = 0
-        self.LARGEUR = 200
-        self.HAUTEUR = 400
+        
 
         self.interface = interface
         self.interface.title("Space Invader - Sanjay x Anaëlle")
 
-        # fenêtre
+        # Fenêtre
+        self.HAUTEUR = self.interface.winfo_screenheight() - 100  # Ajuster la hauteur pour laisser de la place en bas
+        self.LARGEUR = self.interface.winfo_screenwidth() // 3
         self.center_window(self.LARGEUR, self.HAUTEUR)
-        self.Canvas = tk.Canvas(interface, width=self.LARGEUR, height=self.HAUTEUR, bg='black')
+        
+        self.Canvas = tk.Canvas(self.interface, width=self.LARGEUR, height=self.HAUTEUR, bg='black')
         self.Canvas.pack(anchor=tk.CENTER, expand=True)
 
         self.frame = tk.Frame(self.interface)
@@ -30,7 +35,7 @@ class Jeu:
 
         # En-tête
         self.Canvas.create_text(
-            (300, 100),
+            (self.HAUTEUR / 3, self.LARGEUR / 6),
             text="Space Invader",
             fill="yellow",
             font=('arial', 24, "bold")
@@ -56,15 +61,12 @@ class Jeu:
 
     def center_window(self, width, height):
         """Centre la fenêtre sur l'écran."""
-        screen_width = self.interface.winfo_screenwidth()  # Largeur de l'écran
-        screen_height = self.interface.winfo_screenheight()  # Hauteur de l'écran
+        screen_width = self.interface.winfo_screenwidth()
+        screen_height = self.interface.winfo_screenheight()
 
-        # Calculer la position pour centrer la fenêtre
-        position_top = int(screen_height / 2 - height / 2)
-        position_left = int(screen_width / 2 - width / 2)
-
-        # Appliquer la géométrie de la fenêtre
-        self.interface.geometry(f'{width}x{height}+{position_left}+{position_top}')
+        x = (screen_width / 2) - (width / 2) 
+        y = 0
+        self.interface.geometry(f'{width}x{height}+{int(x)}+{int(y)}')
 
     def start_game(self):
         """Code pour démarrer la partie."""
@@ -87,7 +89,6 @@ class Jeu:
 
         """Partie Joueur"""
         self.joueur = Player(self.Canvas, self.LARGEUR, self.HAUTEUR, interface)
-    
 
     def update_score(self):
         """Met à jour l'affichage du score."""
@@ -101,6 +102,14 @@ class Jeu:
 
         # Relancer le mouvement après un court délai
         self.interface.after(16, self.deplacer_aliens)
+    
+    def deplacer_torpilles(self):
+        for torpille in Torpille.torpilles:
+            torpille.deplacer()
+            
+        self.interface.after(50, self.deplacer_torpilles)  # Appelle cette méthode toutes les 50 ms
+
+
     
 
 
