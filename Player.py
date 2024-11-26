@@ -67,7 +67,7 @@ class Player:
         self.canvas.after(10, self.deplacement_continue)  
     
     def creer_torpille(self):
+        """Créer une torpille et l'ajouter à la liste du jeu."""
         torpille = Torpille(self.canvas, self.x, self.y)
-        Torpille.torpilles.append(torpille)
-        Torpille.tirer(self.canvas, self.x, self.y)
+        self.jeu.torpilles.append(torpille)  # Ajoute à la liste du jeu
 

@@ -73,7 +73,9 @@ class Jeu:
         """Code pour démarrer la partie."""
         self.score = 0
         self.update_score()
-        self.torpilles = []  
+        self.torpilles = []  # Réinitialiser les torpilles
+        self.deplacer_torpilles()  # Lancer la gestion des torpilles
+
 
         for alien in self.aliens:
             self.Canvas.delete(alien.id)
@@ -107,17 +109,20 @@ class Jeu:
         self.interface.after(16, self.deplacer_aliens)
     
     def deplacer_torpilles(self):
-        for torpille in self.torpilles:
-            if torpille.y < 0:
+        """Déplace les torpilles et gère les collisions."""
+        for torpille in self.torpilles[:]:  # Copie pour éviter les modifications en cours d'itération
+            if torpille.y < 0:  # Si la torpille sort de l'écran
                 self.torpilles.remove(torpille)
                 self.Canvas.delete(torpille.id)
                 continue
-            
+
+            # Vérifie les collisions avec les aliens
             for alien in self.aliens:
                 tx1, ty1, tx2, ty2 = self.Canvas.coords(torpille.id)
                 ax1, ay1, ax2, ay2 = self.Canvas.coords(alien.id)
 
                 if tx1 < ax2 and tx2 > ax1 and ty1 < ay2 and ty2 > ay1:
+                    # Collision détectée : supprimer l'alien et la torpille
                     self.torpilles.remove(torpille)
                     self.Canvas.delete(torpille.id)
 
@@ -127,8 +132,10 @@ class Jeu:
                     self.score += 1
                     self.update_score()
                     break
-            torpille.deplacer()
-        self.interface.after(50, self.deplacer_torpilles)  # Appelle cette méthode toutes les 50 ms
+
+            torpille.deplacer()  # Déplace la torpille
+
+        self.interface.after(50, self.deplacer_torpilles)
 
 
     
