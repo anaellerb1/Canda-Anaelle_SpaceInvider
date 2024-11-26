@@ -41,9 +41,9 @@ class Alien:
                 alien.canvas.move(alien.id, 0, 20)
         for alien in aliens:
             # print(alien.vitesse_x)
-            alien.x += alien.vitesse_x * alien.direction
-            # alien.canvas.move(alien.id, alien.vitesse_x * alien.direction, 0)
-            alien.id = alien.canvas.create_rectangle(alien.x - 15, alien.y - 15, alien.x + 15, alien.y + 15, fill="yellow")
+            # alien.x += alien.vitesse_x * alien.direction
+            alien.canvas.move(alien.id, alien.vitesse_x * alien.direction, 0)
+            #alien.id = alien.canvas.create_rectangle(alien.x - 15, alien.y - 15, alien.x + 15, alien.y + 15, fill="yellow")
 
     def get_bord(self, aliens):
         """Retourne si un alien aux extrémités (gauche/droite) touche un bord."""

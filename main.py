@@ -123,7 +123,6 @@ class Jeu:
     def update_game(self):
         """Mise à jour de l'état du jeu."""
         # Déplacer les aliens
-        print()
         for alien in self.aliens:
             alien.deplacer_aliens(self.aliens)
             
