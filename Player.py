@@ -65,3 +65,4 @@ class Player:
         if self.direction != 0:  
             self.deplacement(self.direction)
         self.canvas.after(10, self.deplacement_continue)  
+

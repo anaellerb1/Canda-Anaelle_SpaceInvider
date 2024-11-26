@@ -17,8 +17,7 @@ class Jeu:
         # Initialisation des variables
         self.aliens = []  
         self.score = 0
-        
-
+    
         self.interface = interface
         self.interface.title("Space Invader - Sanjay x Anaëlle")
 
@@ -56,8 +55,6 @@ class Jeu:
         game_menu = tk.Menu(menubar, tearoff=0)
         menubar.add_cascade(label="Options", menu=game_menu)
         game_menu.add_command(label="Quitter", command=self.interface.quit)
-
-        
 
     def center_window(self, width, height):
         """Centre la fenêtre sur l'écran."""
@@ -103,15 +100,20 @@ class Jeu:
         # Relancer le mouvement après un court délai
         self.interface.after(16, self.deplacer_aliens)
     
-    def deplacer_torpilles(self):
+    def is_collision(self):
+        """Vérifie si il y a collisions entre les torpilles et les aliens."""
         for torpille in Torpille.torpilles:
-            torpille.deplacer()
-            
-        self.interface.after(50, self.deplacer_torpilles)  # Appelle cette méthode toutes les 50 ms
-
-
-    
-
+            for alien in self.aliens:
+                x1, y1, x2, y2 = self.Canvas.coords(alien.id)
+                x, y = torpille.x, torpille.y
+                if x1 < x < x2 and y1 < y < y2:
+                    self.score += 1
+                    self.update_score()
+                    self.Canvas.delete(alien.id)
+                    self.aliens.remove(alien)
+                    self.Canvas.delete(torpille.id)
+                    Torpille.torpilles.remove(torpille)
+                    break
 
 # Lancer l'interface
 interface = tk.Tk() 

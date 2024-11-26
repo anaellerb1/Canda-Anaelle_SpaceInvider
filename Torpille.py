@@ -27,11 +27,12 @@ class Torpille:
 
         # Met à jour la position de la torpille
         self.canvas.coords(self.id, self.x - 2, self.y - 20, self.x + 2, self.y - 30)
-
+        print(self.torpilles)
         # Si la torpille sort de l'écran, la supprimer
         if self.y < 0:
             self.canvas.delete(self.id)
             Torpille.torpilles.remove(self)  # Retirer la torpille de la liste
+        
         else:
             # Relancer le déplacement de la torpille
             self.canvas.after(20, self.deplacer)
