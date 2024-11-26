@@ -13,12 +13,7 @@ from Player import Player
 from Torpille import Torpille
 
 class Jeu:
-    def __init__(self, interface):
-        # Initialisation des variables
-        self.aliens = []  
-        self.score = 0
-        
-
+    def __init__(self, interface):        
         self.interface = interface
         self.interface.title("Space Invader - Sanjay x Anaëlle")
 
@@ -42,9 +37,10 @@ class Jeu:
         )
         
         # Score
+        self.score = 0
         self.score_label = tk.Label(self.interface, text=f"Score: {self.score}", font=("Arial", 14), fg="black")
         self.score_label.pack()
-
+        
         # Start button
         start_button = tk.Button(self.frame, text="Démarrer", command=self.start_game)
         start_button.pack(side=tk.LEFT, padx=10)
@@ -62,30 +58,34 @@ class Jeu:
     def center_window(self, width, height):
         """Centre la fenêtre sur l'écran."""
         screen_width = self.interface.winfo_screenwidth()
-        screen_height = self.interface.winfo_screenheight()
 
         x = (screen_width / 2) - (width / 2) 
         y = 0
         self.interface.geometry(f'{width}x{height}+{int(x)}+{int(y)}')
 
     def start_game(self):
-        """Code pour démarrer la partie."""
+        """
+        Code pour démarrer la partie. 
+        Réinitialise le score, supprime les aliens existants et crée de nouveaux aliens. 
+
+        """
         self.score = 0
         self.update_score()
         
-        """Partie Alien"""
-        for alien in self.aliens:
+        # Supprimer les aliens existants
+        for alien in Alien.aliens:
             self.Canvas.delete(alien.id)
-        self.aliens = []  # Réinitialiser la liste
+        Alien.aliens = []
 
+        # Crééer de nouveaux aliens
         for i in range(5):  # 5 colonnes
             for j in range(3):  # 3 rangées
                 x = 100 + i * 50
                 y = 50 + j * 50
                 alien = Alien(self.Canvas, x, y, 40, 40, 0.1, self.LARGEUR) 
-                self.aliens.append(alien)
+                Alien.aliens.append(alien)
 
-        self.deplacer_aliens()
+        Alien.deplacer_aliens()
 
         """Partie Joueur"""
         self.joueur = Player(self.Canvas, self.LARGEUR, self.HAUTEUR, interface)
@@ -94,21 +94,8 @@ class Jeu:
         """Met à jour l'affichage du score."""
         self.score_label.config(text=f"Score: {self.score}")
 
-    def deplacer_aliens(self):
-        """Déplace tous les aliens à chaque intervalle."""
-        # Déplacer tous les aliens
-        for alien in self.aliens:
-            alien.deplacer_aliens(self.aliens)
-
-        # Relancer le mouvement après un court délai
-        self.interface.after(16, self.deplacer_aliens)
     
-    def deplacer_torpilles(self):
-        for torpille in Torpille.torpilles:
-            torpille.deplacer()
-            
-        self.interface.after(50, self.deplacer_torpilles)  # Appelle cette méthode toutes les 50 ms
-
+    
 
     
 

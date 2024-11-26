@@ -7,6 +7,7 @@ Fichier de la classe pour définir le vaisseau du joueur
 
 class Alien:
     def __init__(self, canvas, x, y, width, height, vitesse_x, largeur_jeu):
+        self.aliens = [] 
         """Initialisation d'un alien."""
         self.canvas = canvas
         self.id = canvas.create_rectangle(x - 15, y - 15, x + 15, y + 15, fill="yellow")  # Dessin Alien
@@ -31,6 +32,15 @@ class Alien:
         # Déplacer chaque alien horizontalement
         for alien in aliens:
             alien.canvas.move(alien.id, alien.vitesse_x * alien.direction, 0)
+
+    def deplacer_aliens(self):
+        """Déplace tous les aliens à chaque intervalle."""
+        # Déplacer tous les aliens
+        for alien in self.aliens:
+            alien.deplacer_aliens(self.aliens)
+
+        # Relancer le mouvement après un court délai
+        self.interface.after(16, self.deplacer_aliens)
 
     def get_bord(self, aliens):
         """Retourne si un alien aux extrémités (gauche/droite) touche un bord."""

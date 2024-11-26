@@ -31,7 +31,7 @@ class Player:
         interface.bind("<Right>", self.deplacer_droite)
         interface.bind("<KeyRelease-Left>", self.arreter_deplacement)
         interface.bind("<KeyRelease-Right>", self.arreter_deplacement)
-        interface.bind("<space>", lambda event: Torpille.tirer(self.canvas, self.x, self.y))
+        interface.bind("<space>", lambda event, canvas=self.canvas, x=self.x, y=self.y: Torpille.tirer(canvas, x, y))
         # Commencer la mise à jour continue du déplacement
         self.deplacement_continue()
 
