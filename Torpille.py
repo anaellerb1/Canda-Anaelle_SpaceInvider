@@ -22,19 +22,9 @@ class Torpille:
         )
 
     def deplacer(self):
-        """Déplacement de la torpille vers le haut."""
-        self.y -= self.vitesse  # Déplacer la torpille vers le haut
-
-        # Met à jour la position de la torpille
+        self.y -= self.vitesse
         self.canvas.coords(self.id, self.x - 2, self.y - 20, self.x + 2, self.y - 30)
 
-        # Si la torpille sort de l'écran, la supprimer
-        if self.y < 0:
-            self.canvas.delete(self.id)
-            Torpille.torpilles.remove(self)  # Retirer la torpille de la liste
-        else:
-            # Relancer le déplacement de la torpille
-            self.canvas.after(20, self.deplacer)
 
     @classmethod #classe en premier argument (cls) au lieu de l'instance (self).
     def tirer(cls, canvas, x, y):

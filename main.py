@@ -16,6 +16,7 @@ class Jeu:
     def __init__(self, interface):
         # Initialisation des variables
         self.aliens = []  
+        self.torpilles = []  
         self.score = 0
         
 
@@ -72,12 +73,13 @@ class Jeu:
         """Code pour démarrer la partie."""
         self.score = 0
         self.update_score()
-        
-        """Partie Alien"""
+        self.torpilles = []  
+
         for alien in self.aliens:
             self.Canvas.delete(alien.id)
         self.aliens = []  # Réinitialiser la liste
 
+        # Créer les aliens
         for i in range(5):  # 5 colonnes
             for j in range(3):  # 3 rangées
                 x = 100 + i * 50
@@ -86,6 +88,7 @@ class Jeu:
                 self.aliens.append(alien)
 
         self.deplacer_aliens()
+        self.deplacer_torpilles()
 
         """Partie Joueur"""
         self.joueur = Player(self.Canvas, self.LARGEUR, self.HAUTEUR, interface)
@@ -104,9 +107,27 @@ class Jeu:
         self.interface.after(16, self.deplacer_aliens)
     
     def deplacer_torpilles(self):
-        for torpille in Torpille.torpilles:
-            torpille.deplacer()
+        for torpille in self.torpilles:
+            if torpille.y < 0:
+                self.torpilles.remove(torpille)
+                self.Canvas.delete(torpille.id)
+                continue
             
+            for alien in self.aliens:
+                tx1, ty1, tx2, ty2 = self.Canvas.coords(torpille.id)
+                ax1, ay1, ax2, ay2 = self.Canvas.coords(alien.id)
+
+                if tx1 < ax2 and tx2 > ax1 and ty1 < ay2 and ty2 > ay1:
+                    self.torpilles.remove(torpille)
+                    self.Canvas.delete(torpille.id)
+
+                    self.aliens.remove(alien)
+                    self.Canvas.delete(alien.id)
+
+                    self.score += 1
+                    self.update_score()
+                    break
+            torpille.deplacer()
         self.interface.after(50, self.deplacer_torpilles)  # Appelle cette méthode toutes les 50 ms
 
 
