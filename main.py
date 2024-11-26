@@ -1,9 +1,7 @@
 """
 Anaëlle ROBIN  & Sanjay CANDA 3ETI
 07/11/2024
-
 Fichier de la classe Jeu
-
 Status: 
        EN COURS
 """
@@ -22,11 +20,11 @@ class Jeu:
         self.interface.title("Space Invader - Sanjay x Anaëlle")
 
         # Fenêtre
-        self.HAUTEUR = self.interface.winfo_screenheight() - 100  # Ajuster la hauteur pour laisser de la place en bas
+        self.HAUTEUR = self.interface.winfo_screenheight()  # Ajuster la hauteur pour laisser de la place en bas
         self.LARGEUR = self.interface.winfo_screenwidth() // 3
         self.center_window(self.LARGEUR, self.HAUTEUR)
         
-        self.Canvas = tk.Canvas(self.interface, width=self.LARGEUR, height=self.HAUTEUR, bg='black')
+        self.Canvas = tk.Canvas(self.interface, width=self.LARGEUR, height=self.HAUTEUR -100, bg='black')
         self.Canvas.pack(anchor=tk.CENTER, expand=True)
 
         self.frame = tk.Frame(self.interface)
@@ -65,27 +63,25 @@ class Jeu:
         y = 0
         self.interface.geometry(f'{width}x{height}+{int(x)}+{int(y)}')
 
-    def start_game(self):
-        """Code pour démarrer la partie."""
+    def initialiser_jeu(self):
         self.score = 0
         self.update_score()
-        
-        """Partie Alien"""
-        for alien in self.aliens:
-            self.Canvas.delete(alien.id)
-        self.aliens = []  # Réinitialiser la liste
+        self.Canvas.delete("all")
+        self.aliens = []
 
-        for i in range(5):  # 5 colonnes
-            for j in range(3):  # 3 rangées
+    def start_game(self):
+        """Code pour démarrer la partie."""
+        self.initialiser_jeu()
+        for i in range(5):
+            for j in range(3):
                 x = 100 + i * 50
                 y = 50 + j * 50
-                alien = Alien(self.Canvas, x, y, 40, 40, 0.1, self.LARGEUR) 
+                alien = Alien(self.Canvas, int(x), int(y), 0.1, self.LARGEUR)
                 self.aliens.append(alien)
 
-        self.deplacer_aliens()
+        self.joueur = Player(self.Canvas, self.LARGEUR, self.HAUTEUR, self.interface)
 
-        """Partie Joueur"""
-        self.joueur = Player(self.Canvas, self.LARGEUR, self.HAUTEUR, interface)
+        self.update_game()
 
     def update_score(self):
         """Met à jour l'affichage du score."""
@@ -96,22 +92,16 @@ class Jeu:
         for alien in self.aliens:
             alien.deplacer_aliens(self.aliens)
         
-        self.is_collision()  # Vérifie les collisions après chaque déplacement
-        
-        # Relancer le mouvement après un court délai
-        self.interface.after(16, self.deplacer_aliens)
-
     def is_collision(self):
         """Vérifie les collisions entre les torpilles et les aliens."""
-        for torpille in list(Torpille.torpilles):  # Crée une copie de la liste pour éviter des modifications simultanées
-            torpille_coords = self.Canvas.coords(torpille.id)  # [x1, y1, x2, y2] de la torpille
+        for torpille in list(Torpille.torpilles): 
+            torpille_coords = self.Canvas.coords(torpille.id) 
             if not torpille_coords:
-                continue  # La torpille a peut-être déjà été supprimée
-            for alien in list(self.aliens):  # Crée une copie pour éviter des problèmes similaires
-                alien_coords = self.Canvas.coords(alien.id)  # [x1, y1, x2, y2] de l'alien
+                continue  
+            for alien in list(self.aliens):  
+                alien_coords = self.Canvas.coords(alien.id)  
                 if not alien_coords:
-                    continue  # L'alien a peut-être déjà été supprimé
-                
+                    continue 
                 # Vérifier les collisions en comparant les rectangles
                 if (
                     torpille_coords[0] < alien_coords[2] and
@@ -130,7 +120,24 @@ class Jeu:
                     self.update_score()
                     break
 
-    
+    def update_game(self):
+        """Mise à jour de l'état du jeu."""
+        # Déplacer les aliens
+        print()
+        for alien in self.aliens:
+            alien.deplacer_aliens(self.aliens)
+            
+        # Déplacer les torpilles
+        for torpille in list(Torpille.torpilles): 
+            torpille.deplacer()
+        
+        # Vérifier les collisions
+        self.is_collision()
+
+        # Relancer l'update après un délai
+        self.interface.after(32, self.update_game)
+
+
 # Lancer l'interface
 interface = tk.Tk() 
 game = Jeu(interface)

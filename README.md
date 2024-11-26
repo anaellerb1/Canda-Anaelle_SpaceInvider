@@ -7,5 +7,8 @@ CLasse :
 - projectile ??
 
 
-Ajouter unn truc pour que la page s'adapte toute seule // bouton plein écran
-mettre un bouton pause
+
+PROBLEMES / AMELIORATION : 
+    - Aliens qui ralentissent à force de tirer 
+    - 
+
