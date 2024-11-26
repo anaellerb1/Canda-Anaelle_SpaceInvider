@@ -106,6 +106,16 @@ class Jeu:
     def deplacer_torpilles(self):
         for torpille in Torpille.torpilles:
             torpille.deplacer()
+            alien_detecte = torpille.detecter_collision(self.aliens)
+            if alien_detecte:
+                self.score += 1
+                self.update_score()
+                self.aliens.remove(alien_detecte)
+                self.Canvas.delete(alien_detecte.id)
+                self.Canvas.delete(torpille.id)
+                Torpille.torpilles.remove(torpille)
+                break
+            
             
         self.interface.after(50, self.deplacer_torpilles)  # Appelle cette méthode toutes les 50 ms
 

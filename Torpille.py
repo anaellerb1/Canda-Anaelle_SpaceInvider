@@ -35,6 +35,17 @@ class Torpille:
         else:
             # Relancer le déplacement de la torpille
             self.canvas.after(20, self.deplacer)
+    
+    def detecter_collision(self, aliens):
+        """Détecte les collisions avec les aliens."""
+        for alien in aliens:
+            x1, y1, x2, y2 = self.canvas.coords(self.id)
+            x1_a, y1_a, x2_a, y2_a = self.canvas.coords(alien.id)
+            
+            # Vérifie si la torpille touche un alien
+            if x1 < x2_a and x2 > x1_a and y1 < y2_a and y2 > y1_a:
+                return alien
+        return None
 
     @classmethod #classe en premier argument (cls) au lieu de l'instance (self).
     def tirer(cls, canvas, x, y):
