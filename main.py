@@ -15,6 +15,7 @@ class Jeu:
         # Initialisation des variables
         self.aliens = []  
         self.score = 0
+        self.pause = False
     
         self.interface = interface
         self.interface.title("Space Invader - Sanjay x Anaëlle")
@@ -54,16 +55,26 @@ class Jeu:
         menubar.add_cascade(label="Options", menu=game_menu)
         game_menu.add_command(label="Quitter", command=self.interface.quit)
 
+
+    def setBinds(self):
+        """Définit les touches du jeu."""
+        interface.bind("<Left>", self.joueur.deplacer_gauche)
+        interface.bind("<Right>", self.joueur.deplacer_droite)
+        interface.bind("<KeyRelease-Left>", self.joueur.arreter_deplacement)
+        interface.bind("<KeyRelease-Right>", self.joueur.arreter_deplacement)
+        interface.bind("<space>", lambda event: Torpille.tirer(self.joueur.canvas, int(self.joueur.x), int(self.joueur.y)))
+        interface.bind("<Escape>", self.pause_game)
+
+
     def center_window(self, width, height):
         """Centre la fenêtre sur l'écran."""
         screen_width = self.interface.winfo_screenwidth()
-        screen_height = self.interface.winfo_screenheight()
-
         x = (screen_width / 2) - (width / 2) 
         y = 0
         self.interface.geometry(f'{width}x{height}+{int(x)}+{int(y)}')
 
     def initialiser_jeu(self):
+        """Initialise les variables du jeu."""
         self.score = 0
         self.update_score()
         self.Canvas.delete("all")
@@ -72,6 +83,7 @@ class Jeu:
     def start_game(self):
         """Code pour démarrer la partie."""
         self.initialiser_jeu()
+        
         for i in range(5):
             for j in range(3):
                 x = 100 + i * 50
@@ -80,8 +92,36 @@ class Jeu:
                 self.aliens.append(alien)
 
         self.joueur = Player(self.Canvas, self.LARGEUR, self.HAUTEUR, self.interface)
-
+        self.setBinds()
         self.update_game()
+
+    def pause_game(self, event=None):
+        """Code pour mettre en pause la partie."""
+        self.pause = not self.pause
+        if self.pause:
+            self.pause_text = [self.Canvas.create_text(
+                (self.LARGEUR / 2, self.HAUTEUR / 3),
+                text="Pause",
+                fill="red",
+                font=('arial', 24, "bold")
+            ),
+            self.Canvas.create_text(
+                (self.LARGEUR / 2, self.HAUTEUR / 3 + 40),
+                text=f"Score: {self.score}",
+                fill="white",
+                font=('arial', 13, "italic")
+            )
+            ]
+            self.resume_button = tk.Button(self.interface, text="Reprendre", command=self.pause_game)
+            self.Canvas.create_window(self.LARGEUR / 2, self.HAUTEUR / 2 + 10, window=self.resume_button)
+            self.quit_button = tk.Button(self.interface, text="Quitter", command=self.interface.quit)
+            self.Canvas.create_window(self.LARGEUR / 2, self.HAUTEUR / 2 + 50, window=self.quit_button)
+        else:
+            for item in self.pause_text:
+                self.Canvas.delete(item)
+            self.resume_button.destroy()
+            self.quit_button.destroy()
+            self.update_game()
 
     def update_score(self):
         """Met à jour l'affichage du score."""
@@ -98,6 +138,9 @@ class Jeu:
             torpille_coords = self.Canvas.coords(torpille.id) 
             if not torpille_coords:
                 continue  
+            if self.aliens == []:
+                self.gamewin()
+                break
             for alien in list(self.aliens):  
                 alien_coords = self.Canvas.coords(alien.id)  
                 if not alien_coords:
@@ -120,11 +163,15 @@ class Jeu:
                     self.update_score()
                     break
 
+                # Vérifier si les aliens atteignent le bas de l'écran // MARCHE PAS !!!!!!!!
+                if alien_coords[3] >= (self.HAUTEUR-20):
+                    self.gameover()
+                    break
+
     def update_game(self):
         """Mise à jour de l'état du jeu."""
         # Déplacer les aliens
-        for alien in self.aliens:
-            alien.deplacer_aliens(self.aliens)
+        self.deplacer_aliens()
             
         # Déplacer les torpilles
         for torpille in list(Torpille.torpilles): 
@@ -133,9 +180,65 @@ class Jeu:
         # Vérifier les collisions
         self.is_collision()
 
-        # Relancer l'update après un délai
-        self.interface.after(32, self.update_game)
+        if not self.pause:
+            # Relancer l'update après un délai
+            self.interface.after(32, self.update_game)
+            
+        else:
+            # disable les touches de mouvement du joueur
+            interface.unbind("<Left>")
+            interface.unbind("<Right>")
+            interface.unbind("<KeyRelease-Left>")
+            interface.unbind("<KeyRelease-Right>")
+            interface.unbind("<space>")
 
+        
+            
+
+
+        
+
+    def gameover(self):
+        """Affiche un message de fin de partie."""
+        self.Canvas.create_text(
+            (self.LARGEUR / 2, self.HAUTEUR / 2),
+            text="Game Over",
+            fill="red",
+            font=('arial', 24, "bold")
+        )
+        self.Canvas.create_text(
+            (self.LARGEUR / 2, self.HAUTEUR / 2 + 30),
+            text=f"Score: {self.score}",
+            fill="red",
+            font=('arial', 24, "bold")
+        )
+        self.Canvas.create_text(
+            (self.LARGEUR / 2, self.HAUTEUR / 2 + 60),
+            text="Appuyez sur 'Démarrer' pour rejouer",
+            fill="red",
+            font=('arial', 24, "bold")
+        )
+
+    def gamewin(self):
+        """Affiche un message de victoire."""
+        self.Canvas.create_text(
+            (self.LARGEUR / 2, self.HAUTEUR / 2),
+            text="Victoire !",
+            fill="green",
+            font=('arial', 24, "bold")
+        )
+        self.Canvas.create_text(
+            (self.LARGEUR / 2, self.HAUTEUR / 2 + 30),
+            text=f"Score: {self.score}",
+            fill="green",
+            font=('arial', 24, "bold")
+        )
+        self.Canvas.create_text(
+            (self.LARGEUR / 2, self.HAUTEUR / 2 + 60),
+            text="Appuyez sur 'Démarrer' pour rejouer",
+            fill="green",
+            font=('arial', 24, "bold")
+        )
 
 # Lancer l'interface
 interface = tk.Tk() 

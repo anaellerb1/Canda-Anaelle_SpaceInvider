@@ -27,11 +27,7 @@ class Player:
         self.vitesse = 5  # Vitesse du joueur (plus bas pour un contrôle plus fin)
         self.direction = 0  # 0 = pas de mouvement, 1 = droite, -1 = gauche
         
-        interface.bind("<Left>", self.deplacer_gauche)
-        interface.bind("<Right>", self.deplacer_droite)
-        interface.bind("<KeyRelease-Left>", self.arreter_deplacement)
-        interface.bind("<KeyRelease-Right>", self.arreter_deplacement)
-        interface.bind("<space>", lambda event: Torpille.tirer(self.canvas, int(self.x), int(self.y)))
+        
         # Commencer la mise à jour continue du déplacement
         self.deplacement_continue()
 
@@ -64,5 +60,5 @@ class Player:
         """Mettre à jour la position du joueur en fonction de la direction."""
         if self.direction != 0:  
             self.deplacement(self.direction)
-        self.canvas.after(10, self.deplacement_continue)  
+        self.canvas.after(20, self.deplacement_continue)  
 
