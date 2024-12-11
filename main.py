@@ -56,6 +56,7 @@ class Jeu:
         game_menu.add_command(label="Quitter", command=self.interface.quit)
 
 
+
     def setBinds(self):
         """Définit les touches du jeu."""
         interface.bind("<Left>", self.joueur.deplacer_gauche)
@@ -64,7 +65,6 @@ class Jeu:
         interface.bind("<KeyRelease-Right>", self.joueur.arreter_deplacement)
         interface.bind("<space>", lambda event: Torpille.tirer(self.joueur.canvas, int(self.joueur.x), int(self.joueur.y)))
         interface.bind("<Escape>", self.pause_game)
-
 
     def center_window(self, width, height):
         """Centre la fenêtre sur l'écran."""
@@ -83,7 +83,6 @@ class Jeu:
     def start_game(self):
         """Code pour démarrer la partie."""
         self.initialiser_jeu()
-        
         for i in range(5):
             for j in range(3):
                 x = 100 + i * 50
@@ -99,7 +98,9 @@ class Jeu:
         """Code pour mettre en pause la partie."""
         self.pause = not self.pause
         if self.pause:
-            self.pause_text = [self.Canvas.create_text(
+            self.pause_text = [
+            self.Canvas.create_rectangle(0, self.HAUTEUR, self.LARGEUR, 0, fill="black", stipple="gray50"),
+            self.Canvas.create_text(
                 (self.LARGEUR / 2, self.HAUTEUR / 3),
                 text="Pause",
                 fill="red",
@@ -110,8 +111,8 @@ class Jeu:
                 text=f"Score: {self.score}",
                 fill="white",
                 font=('arial', 13, "italic")
-            )
-            ]
+            )]
+            
             self.resume_button = tk.Button(self.interface, text="Reprendre", command=self.pause_game)
             self.Canvas.create_window(self.LARGEUR / 2, self.HAUTEUR / 2 + 10, window=self.resume_button)
             self.quit_button = tk.Button(self.interface, text="Quitter", command=self.interface.quit)
@@ -122,6 +123,7 @@ class Jeu:
             self.resume_button.destroy()
             self.quit_button.destroy()
             self.update_game()
+            self.setBinds()
 
     def update_score(self):
         """Met à jour l'affichage du score."""
@@ -182,21 +184,14 @@ class Jeu:
 
         if not self.pause:
             # Relancer l'update après un délai
-            self.interface.after(32, self.update_game)
-            
+            self.interface.after(32, self.update_game)       
         else:
             # disable les touches de mouvement du joueur
-            interface.unbind("<Left>")
-            interface.unbind("<Right>")
-            interface.unbind("<KeyRelease-Left>")
-            interface.unbind("<KeyRelease-Right>")
-            interface.unbind("<space>")
-
-        
-            
-
-
-        
+            self.interface.unbind("<Left>")
+            self.interface.unbind("<Right>")
+            self.interface.unbind("<KeyRelease-Left>")
+            self.interface.unbind("<KeyRelease-Right>")
+            self.interface.unbind("<space>")
 
     def gameover(self):
         """Affiche un message de fin de partie."""

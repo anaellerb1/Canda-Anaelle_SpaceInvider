@@ -3,7 +3,6 @@ Anaëlle ROBIN  & Sanjay CANDA 3ETI
 07/11/2024
 Fichier de la classe Torpille
 """
-
 class Torpille:
     torpilles = [] 
     MAX_TORPILLES = 1
@@ -26,7 +25,7 @@ class Torpille:
         self.canvas.coords(self.id, self.x - 2, self.y - 20, self.x + 2, self.y - 30)
         if self.y < 0:
             self.canvas.delete(self.id)
-            Torpille.torpilles.remove(self)
+            self.torpilles.remove(self)
 
     @classmethod #classe en premier argument (cls) au lieu de l'instance (self).
     def tirer(cls, canvas, x, y):
