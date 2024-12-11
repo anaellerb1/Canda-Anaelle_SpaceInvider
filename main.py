@@ -112,7 +112,6 @@ class Jeu:
                 fill="white",
                 font=('arial', 13, "italic")
             )]
-            
             self.resume_button = tk.Button(self.interface, text="Reprendre", command=self.pause_game)
             self.Canvas.create_window(self.LARGEUR / 2, self.HAUTEUR / 2 + 10, window=self.resume_button)
             self.quit_button = tk.Button(self.interface, text="Quitter", command=self.interface.quit)
