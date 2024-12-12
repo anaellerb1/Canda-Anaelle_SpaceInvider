@@ -14,7 +14,8 @@ class Jeu:
     def __init__(self, interface):
         # Initialisation des variables
         self.aliens = [] 
-        self.torpilles = [] 
+        self.torpilles_joueur = [] 
+        self.torpilles_alien = []
         self.score = 0
 
         self.jeu = False
@@ -67,11 +68,11 @@ class Jeu:
 
     def setBinds(self):
         """Définit les touches du jeu."""
-        self.interface.bind("<KeyPress-Left>", self.joueur.deplacer_gauche)
-        self.interface.bind("<KeyPress-Right>", self.joueur.deplacer_droite)
+        self.interface.bind("<Left>", self.joueur.deplacer_gauche)
+        self.interface.bind("<Right>", self.joueur.deplacer_droite)
         self.interface.bind("<KeyRelease-Left>", self.joueur.arreter_deplacement)
         self.interface.bind("<KeyRelease-Right>", self.joueur.arreter_deplacement)
-        self.interface.bind("<space>", lambda event: Torpille.tirer(self.joueur.canvas, int(self.joueur.x), int(self.joueur.y), self.torpilles))
+        self.interface.bind("<space>", lambda event: Torpille.tirer(self.joueur.canvas, int(self.joueur.x), int(self.joueur.y), self.torpilles_joueur))
         self.interface.bind("<Escape>", self.pause_game)
 
     def center_window(self, width, height):
@@ -87,7 +88,8 @@ class Jeu:
         self.update_score()
         self.Canvas.delete("all")
         self.aliens = []
-        self.torpilles = []
+        self.torpilles_joueur = []
+        self.torpilles_alien = []
         self.jeu = True
         self.start_button.config(state="disabled")
         
@@ -193,6 +195,9 @@ class Jeu:
         """Déplace tous les aliens à chaque intervalle."""
         if self.aliens:
             self.aliens[0].deplacer_aliens(self.aliens)
+            
+            Torpille.tire_alien(self.aliens, self.torpilles_alien)
+            
         
     def is_collision(self):
         """Vérifie les collisions entre les torpilles et les aliens."""
@@ -207,7 +212,7 @@ class Jeu:
                 continue
             
             #Colisions avec torpilles
-            for torpille in list(self.torpilles):
+            for torpille in list(self.torpilles_joueur):
                 torpille_coords = self.Canvas.coords(torpille.id)
                 if not torpille_coords:
                     continue  # Si la torpille n'existe pas, passer à la suivante
@@ -222,15 +227,27 @@ class Jeu:
                     self.Canvas.delete(alien.id)
                     self.aliens.remove(alien)
                     self.Canvas.delete(torpille.id)
-                    self.torpilles.remove(torpille)
+                    self.torpilles_joueur.remove(torpille)
                     
                     # Mettre à jour le score
                     self.score += 1
                     self.update_score()
                     break
             
+            for torpille in list(self.torpilles_alien):
+                torpille_coords = self.Canvas.coords(torpille.id)
+                if not torpille_coords:
+                    continue
+                if (
+                    torpille_coords[0] < joueur_coords[2] and
+                    torpille_coords[2] > joueur_coords[0] and
+                    torpille_coords[1] < joueur_coords[3] and
+                    torpille_coords[3] > joueur_coords[1]
+                ):
+                    self.gameover()
+                    break
             
-            #Colisions avec le joueur 
+            #Colisions torpille avec le joueur 
             if (
                 joueur_coords[0] < alien_coords[2] and
                 joueur_coords[2] > alien_coords[0] and
@@ -244,10 +261,12 @@ class Jeu:
         """Mise à jour de l'état du jeu."""
         # Déplacer les aliens
         self.deplacer_aliens()
-        
+
         # Déplacer les torpilles
-        for torpille in list(self.torpilles): 
-            torpille.deplacer(self.torpilles)
+        for torpille in list(self.torpilles_joueur): 
+            torpille.deplacer(self.torpilles_joueur)
+        for torpille in list(self.torpilles_alien):
+            torpille.deplacer(self.torpilles_alien)
         
         # Vérifier les collisions
         self.is_collision()
