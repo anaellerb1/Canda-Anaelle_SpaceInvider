@@ -45,6 +45,7 @@ class Torpille:
         x, y = alien.x, alien.y
         if len(torpilles_alien) < cls.MAX_TORPILLES_alien:
             torpille = Torpille(canvas, int(x), int(y), direction=-1)
+            torpille.canvas.itemconfig(torpille.id, fill="yellow")
             torpilles_alien.append(torpille)
             torpille.deplacer(torpilles_alien)
 

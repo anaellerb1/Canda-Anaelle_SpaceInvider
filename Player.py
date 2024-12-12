@@ -11,6 +11,7 @@ class Player:
         self.canvas = canvas
         self.largeur_jeu = largeur_jeu
         self.hauteur_jeu = hauteur_jeu
+
         
         # Initialisation des positions du joueur
         self.x = largeur_jeu / 2
@@ -23,7 +24,7 @@ class Player:
             fill="red",
         )
         
-        self.vitesse = 5  # Vitesse du joueur (plus bas pour un contrôle plus fin)
+        self.vitesse = 4  # Vitesse du joueur 
         self.direction = 0  # 0 = pas de mouvement, 1 = droite, -1 = gauche
         
         

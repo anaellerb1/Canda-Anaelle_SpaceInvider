@@ -16,7 +16,10 @@ class Jeu:
         self.aliens = [] 
         self.torpilles_joueur = [] 
         self.torpilles_alien = []
+        self.player_life = 3
+        self.vie_label = None
         self.score = 0
+        self.score_label = None
 
         self.jeu = False
         self.pause = False
@@ -47,10 +50,6 @@ class Jeu:
             fill="yellow",
             font=('arial', 24, "bold")
         )
-        
-        # Score
-        self.score_label = tk.Label(self.interface, text=f"Score: {self.score}", font=("Arial", 14), fg="black")
-        self.score_label.pack()
 
         # Start button
         self.start_button = tk.Button(self.frame, text="Démarrer", command=self.start_game, state="active")
@@ -64,12 +63,10 @@ class Jeu:
         menubar.add_cascade(label="Options", menu=game_menu)
         game_menu.add_command(label="Quitter", command=self.interface.quit)
 
-
-
     def setBinds(self):
         """Définit les touches du jeu."""
-        self.interface.bind("<Left>", self.joueur.deplacer_gauche)
-        self.interface.bind("<Right>", self.joueur.deplacer_droite)
+        self.interface.bind("<KeyPress-Left>", self.joueur.deplacer_gauche)
+        self.interface.bind("<KeyPress-Right>", self.joueur.deplacer_droite)
         self.interface.bind("<KeyRelease-Left>", self.joueur.arreter_deplacement)
         self.interface.bind("<KeyRelease-Right>", self.joueur.arreter_deplacement)
         self.interface.bind("<space>", lambda event: Torpille.tirer(self.joueur.canvas, int(self.joueur.x), int(self.joueur.y), self.torpilles_joueur))
@@ -85,15 +82,26 @@ class Jeu:
     def initialiser_jeu(self):
         """Initialise les variables du jeu."""
         self.score = 0
-        self.update_score()
+        self.player_life = 3
+        self.update_score_life()
         self.Canvas.delete("all")
         self.aliens = []
         self.torpilles_joueur = []
         self.torpilles_alien = []
         self.jeu = True
         self.start_button.config(state="disabled")
-        
-
+        self.vie_label = self.Canvas.create_text(
+            (self.LARGEUR-50, 30),
+            text=f"Life: {self.player_life}",
+            fill="white",
+            font=('arial', 13, "italic")
+        )
+        self.score_label = self.Canvas.create_text(
+            (50, 30),
+            text=f"Score: {self.score}",
+            fill="white",
+            font=('arial', 13, "italic")
+        )
 
     def start_game(self):
         """Code pour démarrer la partie."""
@@ -137,6 +145,12 @@ class Jeu:
             fill="white",
             font=('arial', 13, "italic")
         )
+        life_text = self.Canvas.create_text(
+            (self.LARGEUR / 2, self.HAUTEUR / 3 + 60),
+            text=f"Life: {self.player_life}",
+            fill="white",
+            font=('arial', 13, "italic")
+        )
 
         if self.pause:  # texte de pause
             pause_interface = [
@@ -147,7 +161,8 @@ class Jeu:
                     fill="red",
                     font=('arial', 24, "bold")
                 ),
-                score_text
+                score_text,
+                life_text
             ]
             return pause_interface
         if self.win:
@@ -160,6 +175,7 @@ class Jeu:
                     font=('arial', 24, "bold")
                 ),
                 score_text,
+                life_text,
                 self.Canvas.create_text(
                     (self.LARGEUR / 2, self.HAUTEUR / 3 + 80),
                     text="Appuyez sur 'Démarrer' pour rejouer",
@@ -178,6 +194,7 @@ class Jeu:
                     font=('arial', 24, "bold")
                 ),
                 score_text,
+                life_text,
                 self.Canvas.create_text(
                     (self.LARGEUR / 2, self.HAUTEUR / 3 + 80),
                     text="Appuyez sur 'Démarrer' pour rejouer",
@@ -186,10 +203,11 @@ class Jeu:
                 )
             ]
             return loose_interface
-        
-    def update_score(self):
-        """Met à jour l'affichage du score."""
-        self.score_label.config(text=f"Score: {self.score}")
+            
+    def update_score_life(self):
+        """Met à jour l'affichage du score et de la vie."""
+        self.Canvas.itemconfig(self.score_label, text=f"Score: {self.score}") 
+        self.Canvas.itemconfig(self.vie_label, text=f"Life: {self.player_life}")   
 
     def deplacer_aliens(self):
         """Déplace tous les aliens à chaque intervalle."""
@@ -197,8 +215,7 @@ class Jeu:
             self.aliens[0].deplacer_aliens(self.aliens)
             
             Torpille.tire_alien(self.aliens, self.torpilles_alien)
-            
-        
+              
     def is_collision(self):
         """Vérifie les collisions entre les torpilles et les aliens."""
         joueur_coords = self.Canvas.coords(self.joueur.id)
@@ -231,7 +248,7 @@ class Jeu:
                     
                     # Mettre à jour le score
                     self.score += 1
-                    self.update_score()
+                    self.update_score_life()
                     break
             
             for torpille in list(self.torpilles_alien):
@@ -244,10 +261,12 @@ class Jeu:
                     torpille_coords[1] < joueur_coords[3] and
                     torpille_coords[3] > joueur_coords[1]
                 ):
-                    self.gameover()
+                    self.player_life -= 1
+                    self.Canvas.delete(torpille.id)
+                    self.update_score_life()
                     break
             
-            #Colisions torpille avec le joueur 
+            #Colisions alien avec le joueur 
             if (
                 joueur_coords[0] < alien_coords[2] and
                 joueur_coords[2] > alien_coords[0] and
@@ -259,6 +278,10 @@ class Jeu:
             
     def update_game(self):
         """Mise à jour de l'état du jeu."""
+        
+        if self.player_life < 1:
+            self.gameover()
+
         # Déplacer les aliens
         self.deplacer_aliens()
 
