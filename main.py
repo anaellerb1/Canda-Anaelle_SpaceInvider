@@ -27,7 +27,7 @@ class Jeu:
         self.interface.title("Space Invader - Sanjay x Anaëlle")
 
         # Fenêtre
-        self.HAUTEUR = self.interface.winfo_screenheight()  # Ajuster la hauteur pour laisser de la place en bas
+        self.HAUTEUR = self.interface.winfo_screenheight() 
         self.LARGEUR = self.interface.winfo_screenwidth() // 3
         self.center_window(self.LARGEUR, self.HAUTEUR)
         
