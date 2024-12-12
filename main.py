@@ -65,8 +65,8 @@ class Jeu:
 
     def setBinds(self):
         """Définit les touches du jeu."""
-        interface.bind("<Left>", self.joueur.deplacer_gauche)
-        interface.bind("<Right>", self.joueur.deplacer_droite)
+        interface.bind("<KeyPress-Left>", self.joueur.deplacer_gauche)
+        interface.bind("<KeyPress-Right>", self.joueur.deplacer_droite)
         interface.bind("<KeyRelease-Left>", self.joueur.arreter_deplacement)
         interface.bind("<KeyRelease-Right>", self.joueur.arreter_deplacement)
         interface.bind("<space>", lambda event: Torpille.tirer(self.joueur.canvas, int(self.joueur.x), int(self.joueur.y), self.torpilles))
