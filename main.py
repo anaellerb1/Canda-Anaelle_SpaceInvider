@@ -39,7 +39,7 @@ class Jeu:
 
         # En-tête
         self.Canvas.create_text(
-            (self.HAUTEUR / 3, self.LARGEUR / 6),
+            (self.LARGEUR / 2, self.HAUTEUR / 6),
             text="Space Invader",
             fill="yellow",
             font=('arial', 24, "bold")
