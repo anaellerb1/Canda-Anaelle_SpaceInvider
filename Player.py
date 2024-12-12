@@ -41,7 +41,7 @@ class Player:
             self.x = self.largeur_jeu
 
         # Mise à jour des coordonnées du vaisseau à chaque déplacement
-        self.canvas.coords(self.id, self.x - 15, self.y + 10, self.x + 15, self.y + 10, self.x, self.y - 10)
+        self.canvas.coords(self.id, self.x - 15, self.y - 10, self.x + 15, self.y + 10)
 
     def deplacer_gauche(self, event):
         """Déplacer le joueur vers la gauche."""

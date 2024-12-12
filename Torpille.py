@@ -4,7 +4,7 @@ Anaëlle ROBIN  & Sanjay CANDA 3ETI
 Fichier de la classe Torpille
 """
 class Torpille:
-    MAX_TORPILLES = 1
+    MAX_TORPILLES = 10
 
     def __init__(self, canvas, x, y):
         """Initialisation de la torpille"""

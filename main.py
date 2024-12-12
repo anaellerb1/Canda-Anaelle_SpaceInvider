@@ -19,11 +19,11 @@ class Jeu:
 
         self.jeu = False
         self.pause = False
-        self.pause_text = []
+        self.pause_interface = []
         self.win = False
-        self.win_text = []
+        self.win_interface = []
         self.loose = False
-        self.loose_text = []
+        self.loose_interface = []
     
         self.interface = interface
         self.interface.title("Space Invader - Sanjay x Anaëlle")
@@ -52,8 +52,8 @@ class Jeu:
         self.score_label.pack()
 
         # Start button
-        start_button = tk.Button(self.frame, text="Démarrer", command=self.start_game)
-        start_button.pack(side=tk.LEFT, padx=10)
+        self.start_button = tk.Button(self.frame, text="Démarrer", command=self.start_game, state="active")
+        self.start_button.pack(side=tk.LEFT, padx=10)
 
         # Menu 'option'
         menubar = tk.Menu(self.interface)
@@ -89,6 +89,8 @@ class Jeu:
         self.aliens = []
         self.torpilles = []
         self.jeu = True
+        self.start_button.config(state="disabled")
+        
 
 
     def start_game(self):
@@ -110,13 +112,13 @@ class Jeu:
         self.pause = not self.pause
         if self.pause:
             self.jeu = False
-            self.pause_text = self.affichagetexte()
+            self.pause_interface = self.affichagetexte()
             self.resume_button = tk.Button(self.interface, text="Reprendre", command=self.pause_game)
             self.Canvas.create_window(self.LARGEUR / 2, self.HAUTEUR / 2 + 10, window=self.resume_button)
             self.quit_button = tk.Button(self.interface, text="Quitter", command=self.interface.quit)
             self.Canvas.create_window(self.LARGEUR / 2, self.HAUTEUR / 2 + 50, window=self.quit_button)
         else:
-            for item in self.pause_text:
+            for item in self.pause_interface:
                 self.Canvas.delete(item)
             self.resume_button.destroy()
             self.quit_button.destroy()
@@ -126,65 +128,63 @@ class Jeu:
 
     def affichagetexte(self):
         """Affichage des textes du jeu."""
-        if self.pause: #texte de pause
-            pause_text = [
-                self.Canvas.create_rectangle(0, self.HAUTEUR, self.LARGEUR, 0, fill="black", stipple="gray50"),
+        rectangle_flou = self.Canvas.create_rectangle(0, self.HAUTEUR, self.LARGEUR, 0, fill="black", stipple="gray50")
+        score_text = self.Canvas.create_text(
+            (self.LARGEUR / 2, self.HAUTEUR / 3 + 40),
+            text=f"Score: {self.score}",
+            fill="white",
+            font=('arial', 13, "italic")
+        )
+
+        if self.pause:  # texte de pause
+            pause_interface = [
+                rectangle_flou,
                 self.Canvas.create_text(
                     (self.LARGEUR / 2, self.HAUTEUR / 3),
                     text="Pause",
                     fill="red",
                     font=('arial', 24, "bold")
                 ),
-                self.Canvas.create_text(
-                    (self.LARGEUR / 2, self.HAUTEUR / 3 + 40),
-                    text=f"Score: {self.score}",
-                    fill="white",
-                    font=('arial', 13, "italic")
-            )]
-            return pause_text
+                score_text
+            ]
+            return pause_interface
         if self.win:
-            win_text = [
+            win_interface = [
+                rectangle_flou,
                 self.Canvas.create_text(
-                    (self.LARGEUR / 2, self.HAUTEUR / 2),
+                    (self.LARGEUR / 2, self.HAUTEUR / 3),
                     text="Victoire !",
                     fill="green",
                     font=('arial', 24, "bold")
                 ),
+                score_text,
                 self.Canvas.create_text(
-                    (self.LARGEUR / 2, self.HAUTEUR / 2 + 30),
-                    text=f"Score: {self.score}",
-                    fill="green",
-                    font=('arial', 24, "bold")
-                ),
-                self.Canvas.create_text(
-                    (self.LARGEUR / 2, self.HAUTEUR / 2 + 60),
+                    (self.LARGEUR / 2, self.HAUTEUR / 3 + 80),
                     text="Appuyez sur 'Démarrer' pour rejouer",
                     fill="green",
-                    font=('arial', 24, "bold")
-                )]
-            return win_text
+                    font=('arial', 13, "bold")
+                )
+            ]
+            return win_interface
         if self.loose:
-            loose_text = [
+            loose_interface = [
+                rectangle_flou,
                 self.Canvas.create_text(
-                    (self.LARGEUR / 2, self.HAUTEUR / 2),
+                    (self.LARGEUR / 2, self.HAUTEUR / 3),
                     text="Game Over",
                     fill="red",
                     font=('arial', 24, "bold")
                 ),
+                score_text,
                 self.Canvas.create_text(
-                    (self.LARGEUR / 2, self.HAUTEUR / 2 + 30),
-                    text=f"Score: {self.score}",
-                    fill="red",
-                    font=('arial', 24, "bold")
-                ),
-                self.Canvas.create_text(
-                    (self.LARGEUR / 2, self.HAUTEUR / 2 + 60),
+                    (self.LARGEUR / 2, self.HAUTEUR / 3 + 80),
                     text="Appuyez sur 'Démarrer' pour rejouer",
                     fill="red",
-                    font=('arial', 24, "bold")
-                )]
-            return loose_text
-
+                    font=('arial', 13, "bold")
+                )
+            ]
+            return loose_interface
+        
     def update_score(self):
         """Met à jour l'affichage du score."""
         self.score_label.config(text=f"Score: {self.score}")
@@ -240,8 +240,6 @@ class Jeu:
                 self.gameover()
                 break
             
-            
-
     def update_game(self):
         """Mise à jour de l'état du jeu."""
         # Déplacer les aliens
@@ -269,12 +267,14 @@ class Jeu:
         """Affiche page de fin de partie."""
         self.loose = True
         self.jeu = False
+        self.start_button.config(state="active")
         self.affichagetexte()
 
     def gamewin(self):
         """Affiche page de victoire."""
         self.win = True
         self.jeu = False
+        self.start_button.config(state="active")
         self.affichagetexte()
 
 
