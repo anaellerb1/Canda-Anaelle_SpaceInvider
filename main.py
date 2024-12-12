@@ -89,6 +89,7 @@ class Jeu:
         self.aliens = []
         self.torpilles_joueur = []
         self.torpilles_alien = []
+        self.ilots = []
         self.jeu = True
         self.start_button.config(state="disabled")
         self.vie_label = self.Canvas.create_text(
