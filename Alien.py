@@ -6,7 +6,7 @@ Fichier de la classe Alien
 
 
 class Alien:
-    def __init__(self, canvas, x, y, vitesse_x, largeur_jeu):
+    def __init__(self, canvas, x, y, largeur_jeu):
         """
         Initialisation d'un alien.
         """
@@ -14,7 +14,7 @@ class Alien:
         self.x = x
         self.y = y
         self.id = canvas.create_rectangle(x - 15, y - 15, x + 15, y + 15, fill="yellow")  
-        self.vitesse_x = vitesse_x
+        self.vitesse_x = 1
         self.vitesse_y = -1
         self.direction = 1  # 1 : se déplacer vers la droite (gauche=-1)
         self.life = 25 

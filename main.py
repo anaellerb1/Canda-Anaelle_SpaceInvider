@@ -93,7 +93,7 @@ class Jeu:
             for j in range(3):
                 x = 100 + i * 50
                 y = 50 + j * 50
-                alien = Alien(self.Canvas, int(x), int(y), 0.1, self.LARGEUR)
+                alien = Alien(self.Canvas, int(x), int(y), self.LARGEUR)
                 self.aliens.append(alien)
 
         self.joueur = Player(self.Canvas, self.LARGEUR, self.HAUTEUR, self.interface)
@@ -184,8 +184,8 @@ class Jeu:
 
     def deplacer_aliens(self):
         """Déplace tous les aliens à chaque intervalle."""
-        for alien in self.aliens:
-            alien.deplacer_aliens(self.aliens)
+        if self.aliens:
+            self.aliens[0].deplacer_aliens(self.aliens)
         
     def is_collision(self):
         """Vérifie les collisions entre les torpilles et les aliens."""
