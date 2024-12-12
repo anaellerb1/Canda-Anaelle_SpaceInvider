@@ -5,7 +5,7 @@ Fichier de la classe Jeu
 Status: fini
 Amélioration :  - Ajout de niveaux
                 - Système de bonus
-                - Alien      
+                - Aliens plus durs     
 """
 import tkinter as tk
 from Alien import Alien
@@ -152,7 +152,9 @@ class Jeu:
         self.update_game()
 
     def pause_game(self, event=None):
-        """Code pour mettre en pause la partie."""
+        """Code pour mettre en pause la partie.
+        entrée : none
+        sortie : none"""
         self.pause = not self.pause
         if self.pause:
             self.jeu = False
@@ -173,7 +175,7 @@ class Jeu:
     def affichagetexte(self):
         """Affichage des textes du jeu
         entrée : none
-        sortie : liste contenant les éléments graphique """
+        sortie : liste contenant les éléments graphiques """
         rectangle_flou = self.Canvas.create_rectangle(0, self.HAUTEUR, self.LARGEUR, 0, fill="black", stipple="gray50")
         score_text = self.Canvas.create_text(
             (self.LARGEUR / 2, self.HAUTEUR / 3 + 40),
