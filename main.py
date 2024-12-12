@@ -75,9 +75,9 @@ class Jeu:
     def center_window(self, width, height):
         """Centre la fenêtre sur l'écran."""
         screen_width = self.interface.winfo_screenwidth()
-        x = (screen_width / 2) - (width / 2) 
+        x = (screen_width // 2) - (width // 2) 
         y = 0
-        self.interface.geometry(f'{width}x{height}+{int(x)}+{int(y)}')
+        self.interface.geometry(f'{width}x{height}+{x}+{y}')
 
     def initialiser_jeu(self):
         """Initialise les variables du jeu."""
