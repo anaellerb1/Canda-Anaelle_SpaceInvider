@@ -16,6 +16,8 @@ class Jeu:
         self.aliens = [] 
         self.torpilles = [] 
         self.score = 0
+
+        self.jeu = False
         self.pause = False
         self.pause_text = []
         self.win = False
@@ -65,12 +67,12 @@ class Jeu:
 
     def setBinds(self):
         """Définit les touches du jeu."""
-        interface.bind("<KeyPress-Left>", self.joueur.deplacer_gauche)
-        interface.bind("<KeyPress-Right>", self.joueur.deplacer_droite)
-        interface.bind("<KeyRelease-Left>", self.joueur.arreter_deplacement)
-        interface.bind("<KeyRelease-Right>", self.joueur.arreter_deplacement)
-        interface.bind("<space>", lambda event: Torpille.tirer(self.joueur.canvas, int(self.joueur.x), int(self.joueur.y), self.torpilles))
-        interface.bind("<Escape>", self.pause_game)
+        self.interface.bind("<KeyPress-Left>", self.joueur.deplacer_gauche)
+        self.interface.bind("<KeyPress-Right>", self.joueur.deplacer_droite)
+        self.interface.bind("<KeyRelease-Left>", self.joueur.arreter_deplacement)
+        self.interface.bind("<KeyRelease-Right>", self.joueur.arreter_deplacement)
+        self.interface.bind("<space>", lambda event: Torpille.tirer(self.joueur.canvas, int(self.joueur.x), int(self.joueur.y), self.torpilles))
+        self.interface.bind("<Escape>", self.pause_game)
 
     def center_window(self, width, height):
         """Centre la fenêtre sur l'écran."""
@@ -85,6 +87,9 @@ class Jeu:
         self.update_score()
         self.Canvas.delete("all")
         self.aliens = []
+        self.torpilles = []
+        self.jeu = True
+
 
     def start_game(self):
         """Code pour démarrer la partie."""
@@ -104,6 +109,7 @@ class Jeu:
         """Code pour mettre en pause la partie."""
         self.pause = not self.pause
         if self.pause:
+            self.jeu = False
             self.pause_text = self.affichagetexte()
             self.resume_button = tk.Button(self.interface, text="Reprendre", command=self.pause_game)
             self.Canvas.create_window(self.LARGEUR / 2, self.HAUTEUR / 2 + 10, window=self.resume_button)
@@ -114,6 +120,7 @@ class Jeu:
                 self.Canvas.delete(item)
             self.resume_button.destroy()
             self.quit_button.destroy()
+            self.jeu = True
             self.update_game()
             self.setBinds()
 
@@ -189,18 +196,22 @@ class Jeu:
         
     def is_collision(self):
         """Vérifie les collisions entre les torpilles et les aliens."""
-        for torpille in list(self.torpilles): 
-            torpille_coords = self.Canvas.coords(torpille.id) 
-            if not torpille_coords:
-                continue  
-            if self.aliens == []:
-                self.gamewin()
-                break
-            for alien in list(self.aliens):  
-                alien_coords = self.Canvas.coords(alien.id)  
-                if not alien_coords:
-                    continue 
-                # Vérifier les collisions en comparant les rectangles
+        joueur_coords = self.Canvas.coords(self.joueur.id)
+
+        if self.aliens == []:
+            self.gamewin()
+        
+        for alien in list(self.aliens):
+            alien_coords = self.Canvas.coords(alien.id)  
+            if not alien_coords:
+                continue
+            
+            #Colisions avec torpilles
+            for torpille in list(self.torpilles):
+                torpille_coords = self.Canvas.coords(torpille.id)
+                if not torpille_coords:
+                    continue  # Si la torpille n'existe pas, passer à la suivante
+
                 if (
                     torpille_coords[0] < alien_coords[2] and
                     torpille_coords[2] > alien_coords[0] and
@@ -217,17 +228,25 @@ class Jeu:
                     self.score += 1
                     self.update_score()
                     break
-
-                # Vérifier si les aliens atteignent le bas de l'écran // MARCHE PAS !!!!!!!!
-                if alien_coords[3] >= (self.HAUTEUR-20):
-                    self.gameover()
-                    break
+            
+            
+            #Colisions avec le joueur 
+            if (
+                joueur_coords[0] < alien_coords[2] and
+                joueur_coords[2] > alien_coords[0] and
+                joueur_coords[1] < alien_coords[3] and
+                joueur_coords[3] > alien_coords[1]
+            ):
+                self.gameover()
+                break
+            
+            
 
     def update_game(self):
         """Mise à jour de l'état du jeu."""
         # Déplacer les aliens
         self.deplacer_aliens()
-            
+        
         # Déplacer les torpilles
         for torpille in list(self.torpilles): 
             torpille.deplacer(self.torpilles)
@@ -235,7 +254,7 @@ class Jeu:
         # Vérifier les collisions
         self.is_collision()
 
-        if not self.pause:
+        if self.jeu:
             # Relancer l'update après un délai
             self.interface.after(32, self.update_game)       
         else:
@@ -249,11 +268,13 @@ class Jeu:
     def gameover(self):
         """Affiche page de fin de partie."""
         self.loose = True
+        self.jeu = False
         self.affichagetexte()
 
     def gamewin(self):
         """Affiche page de victoire."""
         self.win = True
+        self.jeu = False
         self.affichagetexte()
 
 

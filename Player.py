@@ -17,10 +17,9 @@ class Player:
         self.y = hauteur_jeu * (3 / 4)
         
         # Création du vaisseau sous forme de triangle
-        self.id = canvas.create_polygon(
-            self.x - 15, self.y + 10,  # gauche
-            self.x + 15, self.y + 10,  # droit
-            self.x, self.y - 10,       # haut
+        self.id = canvas.create_rectangle(
+            self.x - 15, self.y - 10,  # coin supérieur gauche
+            self.x + 15, self.y + 10,  # coin inférieur droit
             fill="red",
         )
         
