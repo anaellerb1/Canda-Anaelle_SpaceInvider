@@ -16,6 +16,7 @@ class Jeu:
         self.aliens = [] 
         self.torpilles_joueur = [] 
         self.torpilles_alien = []
+        self.ilots = []
         self.player_life = 3
         self.vie_label = None
         self.score = 0
@@ -106,14 +107,26 @@ class Jeu:
     def start_game(self):
         """Code pour démarrer la partie."""
         self.initialiser_jeu()
+        self.joueur = Player(self.Canvas, self.LARGEUR, self.HAUTEUR, self.interface)
+
         for i in range(5):
             for j in range(3):
                 x = 100 + i * 50
                 y = 50 + j * 50
                 alien = Alien(self.Canvas, int(x), int(y), self.LARGEUR)
                 self.aliens.append(alien)
-
-        self.joueur = Player(self.Canvas, self.LARGEUR, self.HAUTEUR, self.interface)
+        
+        for i in range(5):
+            for j in range(2):
+                x = self.LARGEUR/2 - 25 + i * 15
+                y = self.joueur.y -20 + j * 30
+                ilot = self.Canvas.create_rectangle(
+                    x - 60 + i * 20, y - 60,  # coin supérieur gauche
+                    x - 30 + i * 20, y - 40,  # coin inférieur droit
+                    fill="blue",
+                )
+                self.ilots.append(ilot)
+        
         self.setBinds()
         self.update_game()
 
@@ -250,7 +263,6 @@ class Jeu:
                     self.score += 1
                     self.update_score_life()
                     break
-            
             for torpille in list(self.torpilles_alien):
                 torpille_coords = self.Canvas.coords(torpille.id)
                 if not torpille_coords:
@@ -276,6 +288,23 @@ class Jeu:
                 self.gameover()
                 break
             
+        for ilot in list(self.ilots):
+            for torpille in list(self.torpilles_joueur) and list(self.torpilles_alien):
+                torpille_coords = self.Canvas.coords(torpille.id)
+                if not torpille_coords:
+                    continue
+                if (
+                    torpille_coords[0] < ilot[2] and
+                    torpille_coords[2] > ilot[0] and
+                    torpille_coords[1] < ilot[3] and
+                    torpille_coords[3] > ilot[1]
+                ):
+                    self.Canvas.delete(torpille.id)
+                    self.Canvas.delete(ilot)
+                    self.torpilles_joueur.remove(torpille)
+                    self.ilots.remove(ilot)
+
+
     def update_game(self):
         """Mise à jour de l'état du jeu."""
         

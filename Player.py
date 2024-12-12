@@ -62,3 +62,7 @@ class Player:
             self.deplacement(self.direction)
         self.canvas.after(20, self.deplacement_continue)  
 
+    
+
+
+    
