@@ -4,7 +4,6 @@ Anaëlle ROBIN  & Sanjay CANDA 3ETI
 Fichier de la classe Torpille
 """
 class Torpille:
-    torpilles = [] 
     MAX_TORPILLES = 1
 
     def __init__(self, canvas, x, y):
@@ -19,21 +18,21 @@ class Torpille:
             fill="red",  # Couleur
         )
 
-    def deplacer(self):
+    def deplacer(self, torpilles):
         """Déplacement de la torpille vers le haut."""
         self.y -= self.vitesse
         self.canvas.coords(self.id, self.x - 2, self.y - 20, self.x + 2, self.y - 30)
         if self.y < 0:
             self.canvas.delete(self.id)
-            self.torpilles.remove(self)
+            torpilles.remove(self)
 
     @classmethod #classe en premier argument (cls) au lieu de l'instance (self).
-    def tirer(cls, canvas, x, y):
+    def tirer(cls, canvas, x, y, torpilles=list):
         """Créer une torpille et l'ajouter à la liste des torpilles"""
-        if len(cls.torpilles) < cls.MAX_TORPILLES:
+        if len(torpilles) < cls.MAX_TORPILLES:
             torpille = Torpille(canvas, int(x), int(y))
-            cls.torpilles.append(torpille)
-            torpille.deplacer() 
+            torpilles.append(torpille)
+            torpille.deplacer(torpilles) 
 
     
 
