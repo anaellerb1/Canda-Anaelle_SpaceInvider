@@ -41,10 +41,8 @@ class Torpille:
     def tire_alien(cls, aliens, torpilles_alien):
         """Un alien aléatoire tire une torpille"""
         alien = random.choice(aliens)
-        canvas = alien.canvas
-        x, y = alien.x, alien.y
         if len(torpilles_alien) < cls.MAX_TORPILLES_alien:
-            torpille = Torpille(canvas, int(x), int(y), direction=-1)
+            torpille = Torpille(alien.canvas, alien.x, alien.y, direction=-1)
             torpille.canvas.itemconfig(torpille.id, fill="yellow")
             torpilles_alien.append(torpille)
             torpille.deplacer(torpilles_alien)

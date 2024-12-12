@@ -24,7 +24,7 @@ class Player:
             fill="red",
         )
         
-        self.vitesse = 4  # Vitesse du joueur 
+        self.vitesse = 8  # Vitesse du joueur 
         self.direction = 0  # 0 = pas de mouvement, 1 = droite, -1 = gauche
         
         
