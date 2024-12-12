@@ -9,6 +9,7 @@ import tkinter as tk
 from Alien import Alien
 from Player import Player
 from Torpille import Torpille
+from PIL import Image, ImageTk
 
 class Jeu:
     def __init__(self, interface):
@@ -33,13 +34,24 @@ class Jeu:
         self.interface = interface
         self.interface.title("Space Invader - Sanjay x Anaëlle")
 
+        image_fond = Image.open("images/image_de_fond.jpg")
+        image_fond_debut = Image.open("images/image_depart.jpg")
+        
         # Fenêtre
         self.HAUTEUR = self.interface.winfo_screenheight() 
         self.LARGEUR = self.interface.winfo_screenwidth() // 3
         self.center_window(self.LARGEUR, self.HAUTEUR)
+
+        image_fond = image_fond.resize((self.LARGEUR, self.HAUTEUR)) 
+        self.image_fond_tk = ImageTk.PhotoImage(image_fond)
+
+        image_fond_debut = image_fond_debut.resize((self.LARGEUR, self.HAUTEUR))
+        self.image_fond_debut_tk = ImageTk.PhotoImage(image_fond_debut)
         
         self.Canvas = tk.Canvas(self.interface, width=self.LARGEUR, height=self.HAUTEUR -100, bg='black')
         self.Canvas.pack(anchor=tk.CENTER, expand=True)
+
+        self.Canvas.create_image(0, 0, anchor=tk.NW, image=self.image_fond_debut_tk)
 
         self.frame = tk.Frame(self.interface)
         self.frame.pack()
@@ -47,14 +59,6 @@ class Jeu:
         # Bouton de démarrage
         self.start_button = tk.Button(self.Canvas, text="Démarrer", command=self.start_game)
         self.Canvas.create_window(self.LARGEUR / 2, self.HAUTEUR / 2 + 10, window=self.start_button)
-
-        # En-tête
-        self.Canvas.create_text(
-            (self.LARGEUR / 2, self.HAUTEUR / 6),
-            text="Space Invader",
-            fill="yellow",
-            font=('arial', 24, "bold")
-        )
             
         # Menu 'option'
         menubar = tk.Menu(self.interface)
@@ -86,6 +90,7 @@ class Jeu:
         self.player_life = 3
         self.update_score_life()
         self.Canvas.delete("all")
+        self.Canvas.create_image(0, 0, anchor=tk.NW, image=self.image_fond_tk)
         self.aliens = []
         self.torpilles_joueur = []
         self.torpilles_alien = []
@@ -104,6 +109,7 @@ class Jeu:
             fill="white",
             font=('arial', 13, "italic")
         )
+        
 
     def start_game(self):
         """Code pour démarrer la partie."""
@@ -192,7 +198,7 @@ class Jeu:
                 life_text,
                 self.Canvas.create_text(
                     (self.LARGEUR / 2, self.HAUTEUR / 3 + 80),
-                    text="Appuyez sur 'Démarrer' pour rejouer",
+                    text="Appuyez sur 'Rejouer' pour rejouer",
                     fill="green",
                     font=('arial', 13, "bold")
                 )
@@ -211,7 +217,7 @@ class Jeu:
                 life_text,
                 self.Canvas.create_text(
                     (self.LARGEUR / 2, self.HAUTEUR / 3 + 80),
-                    text="Appuyez sur 'Démarrer' pour rejouer",
+                    text="Appuyez sur 'Recommencer' pour rejouer",
                     fill="red",
                     font=('arial', 13, "bold")
                 )
