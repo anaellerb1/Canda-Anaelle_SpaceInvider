@@ -2,8 +2,10 @@
 Anaëlle ROBIN  & Sanjay CANDA 3ETI
 07/11/2024
 Fichier de la classe Jeu
-Status: 
-       EN COURS
+Status: fini
+Amélioration :  - Ajout de niveaux
+                - Système de bonus
+                - Alien      
 """
 import tkinter as tk
 from Alien import Alien
@@ -69,7 +71,10 @@ class Jeu:
         game_menu.add_command(label="Quitter", command=self.interface.quit)
 
     def setBinds(self):
-        """Définit les touches du jeu."""
+        """Définit les touches du jeu
+        entrée : none
+        sortie : none
+        """
         self.interface.bind("<KeyPress-Left>", self.joueur.deplacer_gauche)
         self.interface.bind("<KeyPress-Right>", self.joueur.deplacer_droite)
         self.interface.bind("<KeyRelease-Left>", self.joueur.arreter_deplacement)
@@ -88,7 +93,10 @@ class Jeu:
         self.interface.geometry(f'{width}x{height}+{x}+{y}')
 
     def initialiser_jeu(self):
-        """Initialise les variables du jeu."""
+        """Initialise les variables du jeu
+        entrée : none
+        sortie : none
+        """
         self.score = 0
         self.player_life = 3
         self.update_score_life()
@@ -115,7 +123,10 @@ class Jeu:
         
 
     def start_game(self):
-        """Code pour démarrer la partie."""
+        """Code pour démarrer la partie
+        entrée : none
+        sortie : none
+        """
         self.initialiser_jeu()
         self.joueur = Player(self.Canvas, self.LARGEUR, self.HAUTEUR, self.interface)
 
@@ -160,7 +171,9 @@ class Jeu:
             self.setBinds()
 
     def affichagetexte(self):
-        """Affichage des textes du jeu."""
+        """Affichage des textes du jeu
+        entrée : none
+        sortie : liste contenant les éléments graphique """
         rectangle_flou = self.Canvas.create_rectangle(0, self.HAUTEUR, self.LARGEUR, 0, fill="black", stipple="gray50")
         score_text = self.Canvas.create_text(
             (self.LARGEUR / 2, self.HAUTEUR / 3 + 40),
@@ -228,19 +241,25 @@ class Jeu:
             return loose_interface
             
     def update_score_life(self):
-        """Met à jour l'affichage du score et de la vie."""
+        """Met à jour l'affichage du score et de la vie.
+        entrée : none
+        sortie : none"""
         self.Canvas.itemconfig(self.score_label, text=f"Score: {self.score}") 
         self.Canvas.itemconfig(self.vie_label, text=f"Life: {self.player_life}")   
 
     def deplacer_aliens(self):
-        """Déplace tous les aliens à chaque intervalle."""
+        """Déplace tous les aliens à chaque intervalle.
+        entrée : none
+        sortie : none"""
         if self.aliens:
             self.aliens[0].deplacer_aliens(self.aliens)
             
             Torpille.tire_alien(self.aliens, self.torpilles_alien)
               
     def is_collision(self):
-        """Vérifie les collisions entre les torpilles et les aliens."""
+        """Vérifie les collisions entre les torpilles et les aliens.
+        entrée : none
+        sortie : none"""
         joueur_coords = self.Canvas.coords(self.joueur.id)
 
         if self.aliens == []:
@@ -309,7 +328,9 @@ class Jeu:
                     break
 
     def update_game(self):
-        """Mise à jour de l'état du jeu."""
+        """Mise à jour de l'état du jeu.
+        entrée = none
+        sortie : none"""
         
         if self.player_life < 1:
             self.gameover()
@@ -338,7 +359,10 @@ class Jeu:
             self.interface.unbind("<space>")
 
     def gameover(self):
-        """Affiche page de fin de partie."""
+        """Affiche page de fin de partie.
+        entrée : none
+        sortie : none
+        """
         self.loose = True
         self.jeu = False
         self.affichagetexte()
@@ -348,7 +372,10 @@ class Jeu:
         self.Canvas.create_window(self.LARGEUR / 2, self.HAUTEUR / 2 + 50, window=self.quit_button)
 
     def gamewin(self):
-        """Affiche page de victoire."""
+        """Affiche page de victoire.
+        entrée : none
+        sortie : none
+        """
         self.win = True
         self.jeu = False
         self.affichagetexte()

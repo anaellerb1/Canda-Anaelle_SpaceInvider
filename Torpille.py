@@ -22,7 +22,9 @@ class Torpille:
         )
 
     def deplacer(self, torpilles,):
-        """Déplacement de la torpille vers le haut."""
+        """Déplacement de la torpille vers le haut.
+        entrée : none
+        sortie : none"""
         self.y -= self.vitesse * self.direction
         self.canvas.coords(self.id, self.x - 2, self.y - 20, self.x + 2, self.y - 30)
         if self.y < 0 or self.y > 600:
@@ -31,7 +33,9 @@ class Torpille:
 
     @classmethod #classe en premier argument (cls) au lieu de l'instance (self).
     def tirer(cls, canvas, x, y, torpilles_joueur=list):
-        """Créer une torpille et l'ajouter à la liste des torpilles"""
+        """Créer une torpille et l'ajouter à la liste des torpilles
+        entrée : none
+        sortie : none"""
         if len(torpilles_joueur) < cls.MAX_TORPILLES_joueur:
             torpille = Torpille(canvas, int(x), int(y), direction=1)
             torpilles_joueur.append(torpille)
@@ -39,7 +43,9 @@ class Torpille:
     
     @classmethod
     def tire_alien(cls, aliens, torpilles_alien):
-        """Un alien aléatoire tire une torpille"""
+        """Un alien aléatoire tire une torpille
+        entrée : none
+        sortie : none"""
         alien = random.choice(aliens)
         if len(torpilles_alien) < cls.MAX_TORPILLES_alien:
             torpille = Torpille(alien.canvas, alien.x, alien.y, direction=-1)

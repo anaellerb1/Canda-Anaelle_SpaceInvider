@@ -45,19 +45,27 @@ class Player:
         self.canvas.coords(self.id, self.x - 15, self.y - 10, self.x + 15, self.y + 10)
 
     def deplacer_gauche(self, event):
-        """Déplacer le joueur vers la gauche."""
+        """Déplacer le joueur vers la gauche.
+        entrée : none 
+        sortie : none"""
         self.direction = -1 
 
     def deplacer_droite(self, event):
-        """Déplacer le joueur vers la droite."""
+        """Déplacer le joueur vers la droite.
+        entrée : none
+        sortie : none"""
         self.direction = 1 
     
     def arreter_deplacement(self, event):
-        """Arrêter le mouvement du joueur."""
+        """Arrêter le mouvement du joueur.
+        entrée : none
+        sortie : none"""
         self.direction = 0  
 
     def deplacement_continue(self):
-        """Mettre à jour la position du joueur en fonction de la direction."""
+        """Mettre à jour la position du joueur en fonction de la direction.
+        entrée : none
+        sortie : none"""
         if self.direction != 0:  
             self.deplacement(self.direction)
         self.canvas.after(20, self.deplacement_continue)  

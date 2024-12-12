@@ -24,7 +24,6 @@ class Alien:
         """
         Méthode pour déplacer tous les aliens à chaque intervalle. 
         Si un alien touche un bord, il change de direction et descend.
-
         Args:
             aliens (list): Liste des aliens à déplacer
 
@@ -42,7 +41,12 @@ class Alien:
             alien.canvas.move(alien.id, alien.vitesse_x * alien.direction, 0)
 
     def get_bord(self, aliens):
-        """Retourne si un alien aux extrémités (gauche/droite) touche un bord."""
+        """Retourne si un alien aux extrémités (gauche/droite) touche un bord.
+        Args:
+            liste d'objet (aliens)
+        Returns:
+            Un dictionnaire (bords) avec les clés 'Gauche' et 'Droite'
+        """
         bords = {'Gauche': False, 'Droite': False}
         x1, y1, x2, y2 = self.canvas.coords(aliens[0].id)
         if x1 <= 0:  
