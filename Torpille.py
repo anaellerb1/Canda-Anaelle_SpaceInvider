@@ -5,7 +5,7 @@ Fichier de la classe Torpille
 """
 import random
 class Torpille:
-    MAX_TORPILLES_joueur = 10
+    MAX_TORPILLES_joueur = 1
     MAX_TORPILLES_alien = 1
 
     def __init__(self, canvas, x, y, direction):

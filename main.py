@@ -120,7 +120,7 @@ class Jeu:
         for i in range(5):
             for j in range(2):
                 x = self.LARGEUR/2 - 25 + i * 15
-                y = self.joueur.y -20 + j * 30
+                y = self.joueur.y -50 + j * 30
                 ilot = self.Canvas.create_rectangle(
                     x - 60 + i * 20, y - 60,  # coin supérieur gauche
                     x - 30 + i * 20, y - 40,  # coin inférieur droit
@@ -239,72 +239,65 @@ class Jeu:
         
         for alien in list(self.aliens):
             alien_coords = self.Canvas.coords(alien.id)  
-            if not alien_coords:
-                continue
-            
-            #Colisions avec torpilles
-            for torpille in list(self.torpilles_joueur):
-                torpille_coords = self.Canvas.coords(torpille.id)
-                if not torpille_coords:
-                    continue  # Si la torpille n'existe pas, passer à la suivante
+            for ilot in list(self.ilots):
+                ilot_coords = self.Canvas.coords(ilot)
+                if not ilot_coords:
+                    continue
+                if not alien_coords:
+                    continue
 
-                if (
-                    torpille_coords[0] < alien_coords[2] and
-                    torpille_coords[2] > alien_coords[0] and
-                    torpille_coords[1] < alien_coords[3] and
-                    torpille_coords[3] > alien_coords[1]
-                ):
-                    # Supprimer les objets en cas de collision
-                    self.Canvas.delete(alien.id)
-                    self.aliens.remove(alien)
-                    self.Canvas.delete(torpille.id)
-                    self.torpilles_joueur.remove(torpille)
+            #Colisions avec torpilles joueur
+                for torpille in list(self.torpilles_joueur):
+                    torpille_coords = self.Canvas.coords(torpille.id)
+                    if not torpille_coords:
+                        continue  
                     
-                    # Mettre à jour le score
-                    self.score += 1
-                    self.update_score_life()
-                    break
-            for torpille in list(self.torpilles_alien):
-                torpille_coords = self.Canvas.coords(torpille.id)
-                if not torpille_coords:
-                    continue
-                if (
-                    torpille_coords[0] < joueur_coords[2] and
-                    torpille_coords[2] > joueur_coords[0] and
-                    torpille_coords[1] < joueur_coords[3] and
-                    torpille_coords[3] > joueur_coords[1]
-                ):
-                    self.player_life -= 1
-                    self.Canvas.delete(torpille.id)
-                    self.update_score_life()
-                    break
-            
-            #Colisions alien avec le joueur 
-            if (
-                joueur_coords[0] < alien_coords[2] and
-                joueur_coords[2] > alien_coords[0] and
-                joueur_coords[1] < alien_coords[3] and
-                joueur_coords[3] > alien_coords[1]
-            ):
-                self.gameover()
-                break
-            
-        for ilot in list(self.ilots):
-            for torpille in list(self.torpilles_joueur) and list(self.torpilles_alien):
-                torpille_coords = self.Canvas.coords(torpille.id)
-                if not torpille_coords:
-                    continue
-                if (
-                    torpille_coords[0] < ilot[2] and
-                    torpille_coords[2] > ilot[0] and
-                    torpille_coords[1] < ilot[3] and
-                    torpille_coords[3] > ilot[1]
-                ):
-                    self.Canvas.delete(torpille.id)
-                    self.Canvas.delete(ilot)
-                    self.torpilles_joueur.remove(torpille)
-                    self.ilots.remove(ilot)
+                    # Torpille joueur touche un alien
+                    if (torpille_coords[0] < alien_coords[2] and torpille_coords[2] > alien_coords[0] and torpille_coords[1] < alien_coords[3] and torpille_coords[3] > alien_coords[1]):
+                        self.Canvas.delete(alien.id)
+                        self.aliens.remove(alien)
+                        self.Canvas.delete(torpille.id)
+                        self.torpilles_joueur.remove(torpille)
+                        
+                        # Mettre à jour le score
+                        self.score += 1
+                        self.update_score_life()
+                        break
 
+                    # Torpille joueur touche un ilot
+                    if (torpille_coords[0] < ilot_coords[2] and torpille_coords[2] > ilot_coords[0] and torpille_coords[1] < ilot_coords[3] and torpille_coords[3] > ilot_coords[1]):
+                        self.Canvas.delete(ilot)
+                        self.Canvas.delete(torpille.id)
+                        self.ilots.remove(ilot)
+                        self.torpilles_joueur.remove(torpille)
+                        break
+
+                for torpille in list(self.torpilles_alien):
+                    torpille_coords = self.Canvas.coords(torpille.id)
+                    if not torpille_coords:
+                        continue
+                    if (torpille_coords[0] < joueur_coords[2] and torpille_coords[2] > joueur_coords[0] and torpille_coords[1] < joueur_coords[3] and torpille_coords[3] > joueur_coords[1]):
+                        self.player_life -= 1
+                        self.Canvas.delete(torpille.id)
+                        self.update_score_life()
+                        break
+
+                    if (torpille_coords[0] < ilot_coords[2] and torpille_coords[2] > ilot_coords[0] and torpille_coords[1] < ilot_coords[3] and torpille_coords[3] > ilot_coords[1]):
+                        self.Canvas.delete(ilot)
+                        self.Canvas.delete(torpille.id)
+                        self.ilots.remove(ilot)
+                        self.torpilles_alien.remove(torpille)
+                        break
+                
+                #Colisions alien avec le joueur 
+                if (
+                    joueur_coords[0] < alien_coords[2] and
+                    joueur_coords[2] > alien_coords[0] and
+                    joueur_coords[1] < alien_coords[3] and
+                    joueur_coords[3] > alien_coords[1]
+                ):
+                    self.gameover()
+                    break
 
     def update_game(self):
         """Mise à jour de l'état du jeu."""
@@ -339,7 +332,6 @@ class Jeu:
         """Affiche page de fin de partie."""
         self.loose = True
         self.jeu = False
-        self.start_button.config(state="active")
         self.affichagetexte()
         self.resume_button = tk.Button(self.interface, text="Recommencer", command=self.start_game)
         self.Canvas.create_window(self.LARGEUR / 2, self.HAUTEUR / 2 + 10, window=self.resume_button)
@@ -350,8 +342,11 @@ class Jeu:
         """Affiche page de victoire."""
         self.win = True
         self.jeu = False
-        self.start_button.config(state="active")
         self.affichagetexte()
+        self.resume_button = tk.Button(self.interface, text="Rejouer", command=self.start_game)
+        self.Canvas.create_window(self.LARGEUR / 2, self.HAUTEUR / 2 + 10, window=self.resume_button)
+        self.quit_button = tk.Button(self.interface, text="Quitter", command=self.interface.quit)
+        self.Canvas.create_window(self.LARGEUR / 2, self.HAUTEUR / 2 + 50, window=self.quit_button)
 
 
 
