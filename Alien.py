@@ -2,6 +2,8 @@
 Anaëlle ROBIN  & Sanjay CANDA 3ETI
 07/11/2024
 Fichier de la classe Alien
+Amélioration : créer différent type d'alien avec des spécificités 
+différentes(avec peut être différente classe)
 """
 
 
