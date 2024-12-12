@@ -43,6 +43,10 @@ class Jeu:
         self.frame = tk.Frame(self.interface)
         self.frame.pack()
 
+        # Bouton de démarrage
+        self.start_button = tk.Button(self.Canvas, text="Démarrer", command=self.start_game)
+        self.Canvas.create_window(self.LARGEUR / 2, self.HAUTEUR / 2 + 10, window=self.start_button)
+
         # En-tête
         self.Canvas.create_text(
             (self.LARGEUR / 2, self.HAUTEUR / 6),
@@ -50,11 +54,7 @@ class Jeu:
             fill="yellow",
             font=('arial', 24, "bold")
         )
-
-        # Start button
-        self.start_button = tk.Button(self.frame, text="Démarrer", command=self.start_game, state="active")
-        self.start_button.pack(side=tk.LEFT, padx=10)
-
+            
         # Menu 'option'
         menubar = tk.Menu(self.interface)
         self.interface.config(menu=menubar)
@@ -311,6 +311,10 @@ class Jeu:
         self.jeu = False
         self.start_button.config(state="active")
         self.affichagetexte()
+        self.resume_button = tk.Button(self.interface, text="Recommencer", command=self.start_game)
+        self.Canvas.create_window(self.LARGEUR / 2, self.HAUTEUR / 2 + 10, window=self.resume_button)
+        self.quit_button = tk.Button(self.interface, text="Quitter", command=self.interface.quit)
+        self.Canvas.create_window(self.LARGEUR / 2, self.HAUTEUR / 2 + 50, window=self.quit_button)
 
     def gamewin(self):
         """Affiche page de victoire."""
