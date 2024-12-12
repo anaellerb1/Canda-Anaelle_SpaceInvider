@@ -78,7 +78,10 @@ class Jeu:
         self.interface.bind("<Escape>", self.pause_game)
 
     def center_window(self, width, height):
-        """Centre la fenêtre sur l'écran."""
+        """Centre la fenêtre sur l'écran.
+        entrée : none
+        sortie : none
+        """
         screen_width = self.interface.winfo_screenwidth()
         x = (screen_width // 2) - (width // 2) 
         y = 0
